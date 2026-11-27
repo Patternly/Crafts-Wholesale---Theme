@@ -17,7 +17,7 @@
   </div>
   <div class="cw-c-col">
     {%- if multi -%}
-      {%- if product.available -%}<span class="cw-stock cw-stock--ok">In stock</span>{%- else -%}{%- render 'cw-stock', variant: v, product: product -%}{%- endif -%}
+      {%- if product.available and settings.cw_stock_show == 'status' -%}<span class="cw-stock cw-stock--ok">In stock</span>{%- elsif product.available -%}{%- else -%}{%- render 'cw-stock', variant: v, product: product -%}{%- endif -%}
     {%- else -%}
       {%- render 'cw-stock', variant: v, product: product, show_qty: true -%}
     {%- endif -%}

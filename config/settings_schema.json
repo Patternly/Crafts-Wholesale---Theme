@@ -1480,6 +1480,32 @@
         ]
       },
       {
+        "type": "checkbox",
+        "id": "cw_show_rrp",
+        "label": "Show RRP and margin",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "cw_stock_show",
+        "label": "Stock shown to customers",
+        "default": "none",
+        "options": [
+          {
+            "value": "none",
+            "label": "Nothing (only Out of stock / Arriving soon)"
+          },
+          {
+            "value": "status",
+            "label": "In stock / Low stock, no numbers"
+          },
+          {
+            "value": "qty",
+            "label": "Numbers (e.g. 4 left)"
+          }
+        ]
+      },
+      {
         "type": "text",
         "id": "cw_trade_tag",
         "label": "Trade tag",

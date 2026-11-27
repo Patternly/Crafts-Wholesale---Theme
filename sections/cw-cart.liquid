@@ -47,7 +47,7 @@
           <a href="{{ item.url }}" tabindex="-1">{%- if item.image -%}{{ item.image | image_url: width: 140 | image_tag: loading: 'lazy', alt: '', width: 64, height: 64 }}{%- endif -%}</a>
           <div style="min-width:0">
             <a href="{{ item.url }}" style="font-weight:600;text-decoration:none;color:var(--cw-ink)">{{ item.product.title | escape }}</a>
-            <div class="cw-small">{% unless item.product.has_only_default_variant %}{{ item.variant.title | escape }} · {% endunless %}SKU {{ item.sku | default: '—' | escape }} · {% render 'cw-stock', variant: item.variant, product: item.product %}</div>
+            <div class="cw-small">{% unless item.product.has_only_default_variant %}{{ item.variant.title | escape }} · {% endunless %}SKU {{ item.sku | default: '—' | escape }}{% capture st %}{% render 'cw-stock', variant: item.variant, product: item.product %}{% endcapture %}{% if st != blank %} · {{ st }}{% endif %}</div>
             {%- for d in item.line_level_discount_allocations -%}<div class="cw-small" style="color:var(--cw-ok)">{{ d.discount_application.title | escape }} (−{{ d.amount | money }})</div>{%- endfor -%}
           </div>
           <div class="cw-c-col cw-c-price">{{ item.final_price | money }}</div>

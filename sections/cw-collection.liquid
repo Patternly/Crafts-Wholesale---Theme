@@ -89,7 +89,7 @@
     </aside>
     {%- endif -%}
 
-    <div class="cw-main cw-main--m{{ section.settings.mobile_columns | default: '2' }}" data-cw-main>
+    <div class="cw-main{% unless settings.cw_show_rrp %} cw-norrp{% endunless %} cw-main--m{{ section.settings.mobile_columns | default: '2' }}" data-cw-main>
       {%- if collection.products.size == 0 -%}
         <div class="cw-empty"><h2 class="cw-h2">Nothing here yet</h2><p class="cw-muted">Try fewer filters or another search.</p></div>
       {%- else -%}

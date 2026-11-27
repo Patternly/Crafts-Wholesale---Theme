@@ -28,16 +28,20 @@
   if variant.available == false and kind != 'soon'
     assign kind = 'out'
   endif
+  assign stock_mode = settings.cw_stock_show | default: 'none'
+  if stock_mode != 'qty'
+    assign show_qty = false
+  endif
 -%}
 {%- capture label -%}
   {%- case kind -%}
     {%- when 'soon' -%}Arriving soon{%- if soon_date %} · est. {{ soon_date | date: '%-d %b' }}{%- endif -%}
     {%- when 'out' -%}Out of stock
-    {%- when 'low' -%}{{ q }} left
+    {%- when 'low' -%}{% if stock_mode == 'qty' %}{{ q }} left{% else %}Low stock{% endif %}
     {%- else -%}{%- if tracked and show_qty -%}{{ q }} in stock{%- else -%}In stock{%- endif -%}
   {%- endcase -%}
 {%- endcapture -%}
-{%- if style == 'tag' -%}
+{%- if stock_mode == 'none' and kind != 'out' and kind != 'soon' -%}{%- elsif style == 'tag' -%}
   <span class="cw-tag cw-tag--{% if kind == 'low' %}ok{% else %}{{ kind }}{% endif %}">{{ label }}</span>
 {%- else -%}
   <span class="cw-stock cw-stock--{{ kind }}">{{ label }}</span>

@@ -6,6 +6,9 @@
 {%- endcomment -%}
 {%- liquid
   assign rrp = product.metafields.custom.rrp_per_ball.value
+  if part != 'unit' and settings.cw_show_rrp != true
+    assign rrp = blank
+  endif
   if rrp != blank
   assign units = product.metafields.custom.balls_per_pack.value | default: 1
   assign trade_unit = variant.price | divided_by: 100.0 | divided_by: units
