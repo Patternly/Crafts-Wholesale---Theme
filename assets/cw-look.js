@@ -4,7 +4,7 @@
   var root = (window.Shopify && Shopify.routes && Shopify.routes.root) || '/';
 
   function money(cents) {
-    var f = CW.money || '£{{amount}}';
+    var f = CW.sym ? CW.sym + '{{amount}}' : (CW.money || '£{{amount}}');
     var n = (cents || 0) / 100;
     function fmt(d, t, dec) {
       var p = n.toFixed(d).split('.');
@@ -37,20 +37,28 @@
 
   /* ---------- basket total in the header + order bars ---------- */
   function paint(cart) {
-    var min = Number(CW.min || 0);
     document.querySelectorAll('[data-cw-cart-total]').forEach(function (el) { el.textContent = cart.item_count ? money(cart.total_price) : (el.getAttribute('data-empty') || 'Basket'); });
     document.querySelectorAll('[data-cw-cart-count]').forEach(function (el) { el.textContent = cart.item_count; });
+    var g = goal(cart.total_price);
     document.querySelectorAll('[data-cw-bar]').forEach(function (bar) {
-      var left = min - cart.total_price;
       var msg = bar.querySelector('[data-cw-bar-min]');
       var tot = bar.querySelector('[data-cw-bar-total]');
       var fill = bar.querySelector('[data-cw-bar-fill]');
       if (tot) tot.textContent = cart.item_count + (cart.item_count === 1 ? ' item · ' : ' items · ') + money(cart.total_price);
-      if (msg) msg.textContent = !min ? '' : left > 0 ? money(left) + ' to the ' + money(min) + ' minimum' : 'Minimum order reached';
-      if (fill) fill.style.width = (min ? Math.min(100, cart.total_price / min * 100) : 100) + '%';
-      bar.classList.toggle('is-met', left <= 0);
+      if (msg) msg.textContent = g.text;
+      if (fill) fill.style.width = g.pct + '%';
+      bar.classList.toggle('is-met', g.done);
     });
   }
+  /* next goal: the minimum order first, then free delivery */
+  function goal(total) {
+    var min = Number(CW.min || 0), free = Number(CW.free || 0);
+    if (min && total < min) return { text: money(min - total) + ' to the ' + money(min) + ' minimum', pct: Math.min(100, total / min * 100), done: false };
+    if (free && total < free) return { text: (min ? 'Minimum reached · ' : '') + money(free - total) + ' more for free delivery', pct: Math.min(100, total / free * 100), done: false };
+    if (free) return { text: 'Free delivery unlocked', pct: 100, done: true };
+    return { text: min ? 'Minimum order reached' : '', pct: 100, done: true };
+  }
+  CW.goal = goal;
   function refresh() {
     return fetch(root + 'cart.js', { headers: { Accept: 'application/json' } }).then(function (r) { return r.json(); }).then(function (c) { paint(c); return c; });
   }
@@ -142,16 +150,54 @@
       var found = 0;
       box.querySelectorAll('[data-cw-fact]').forEach(function (f) {
         var keys = f.getAttribute('data-cw-fact').split('|');
+        var sep = f.getAttribute('data-cw-sep') === 'opt' ? '[:\\-–]?' : '[:\\-–]';
         var val = null;
         for (var i = 0; i < keys.length && !val; i++) {
-          var m = text.match(new RegExp('(?:^|\\n|\\s)' + keys[i] + '\\s*(?:count|number|of colou?rs)?\\s*[:\\-–]\\s*([^\\n]{1,60})', 'i'));
+          var k = keys[i].replace(/[\/]/g, '\\/');
+          var m = text.match(new RegExp('(?:^|\\n|\\s)' + k + '\\s*(?:count|number|of colou?rs)?\\s*' + sep + '\\s*([^\\n]{1,70})', 'i'));
           if (m) val = m[1].trim().replace(/[.;,]$/, '');
         }
-        if (val) { f.querySelector('b').textContent = val; found++; } else f.remove();
+        if (val) { f.querySelector('b').textContent = val; f.classList.toggle('is-long', val.length > 16); found++; } else f.remove();
       });
       if (found) box.hidden = false;
     });
   }
+
+  /* ---------- product photos: download all as one zip ---------- */
+  function loadZip() {
+    if (window.JSZip) return Promise.resolve(window.JSZip);
+    return new Promise(function (ok, bad) {
+      var sc = document.createElement('script');
+      sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+      sc.onload = function () { ok(window.JSZip); }; sc.onerror = bad;
+      document.head.appendChild(sc);
+    });
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-cw-photos-all]');
+    if (!b) return;
+    var box = b.closest('[data-cw-photos]');
+    var links = Array.prototype.slice.call(box.querySelectorAll('a[href]'));
+    var name = box.getAttribute('data-cw-photos') || 'photos';
+    b.classList.add('is-busy');
+    loadZip().then(function (JSZip) {
+      var zip = new JSZip();
+      return Promise.all(links.map(function (a, i) {
+        return fetch(a.href).then(function (r) { if (!r.ok) throw new Error('Photo ' + (i + 1) + ' failed'); return r.blob(); }).then(function (blob) {
+          var ext = (blob.type.split('/')[1] || 'jpg').replace('jpeg', 'jpg');
+          zip.file(name + '-' + String(i + 1).padStart(2, '0') + '.' + ext, blob);
+        });
+      })).then(function () { return zip.generateAsync({ type: 'blob' }); });
+    }).then(function (blob) {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = name + '-photos.zip';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+    }).catch(function () {
+      toast('Could not make the zip, downloading one by one');
+      links.forEach(function (a, i) { setTimeout(function () { window.open(a.href, '_blank'); }, i * 400); });
+    }).then(function () { b.classList.remove('is-busy'); });
+  });
 
   /* ---------- collection: list / grid, sort, filters on phones ---------- */
   function views() {

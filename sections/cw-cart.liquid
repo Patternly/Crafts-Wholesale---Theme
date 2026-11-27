@@ -2,12 +2,16 @@
 {%- liquid
   assign min = settings.cw_min_order | default: 0 | times: 100 | round
   assign left = min | minus: cart.total_price
+  assign free = settings.cw_free_ship | default: 0 | times: 100 | round
+  assign free_left = free | minus: cart.total_price
   assign pct = 100
-  if min > 0
+  assign goal_done = true
+  if min > 0 and left > 0
     assign pct = cart.total_price | times: 100 | divided_by: min
-    if pct > 100
-      assign pct = 100
-    endif
+    assign goal_done = false
+  elsif free > 0 and free_left > 0
+    assign pct = cart.total_price | times: 100 | divided_by: free
+    assign goal_done = false
   endif
 -%}
 <div class="cw">
@@ -56,10 +60,16 @@
 
     <aside class="cw-sum">
       <div class="cw-sum__box">
-        {%- if min > 0 -%}
+        {%- if min > 0 or free > 0 -%}
           <div style="display:flex;flex-direction:column;gap:8px">
-            <b>{% if left > 0 %}Add {{ left | money }} to reach the {{ min | money_without_trailing_zeros }} minimum{% else %}Minimum order reached{% endif %}</b>
-            <div class="cw-sum__track{% if left <= 0 %} is-met{% endif %}"><i style="width:{{ pct }}%"></i></div>
+            <b>
+              {%- if min > 0 and left > 0 -%}Add {{ left | money }} to reach the {{ min | money_without_trailing_zeros }} minimum
+              {%- elsif free > 0 and free_left > 0 -%}{% if min > 0 %}Minimum reached. {% endif %}Add {{ free_left | money }} more for free delivery
+              {%- elsif free > 0 -%}Free delivery unlocked
+              {%- else -%}Minimum order reached{%- endif -%}
+            </b>
+            <div class="cw-sum__track{% if goal_done %} is-met{% endif %}"><i style="width:{{ pct }}%"></i></div>
+            {%- if free > 0 and min > 0 and left > 0 -%}<small class="cw-muted">Free delivery from {{ free | money_without_trailing_zeros }}</small>{%- endif -%}
           </div>
         {%- endif -%}
         <div class="cw-sum__row"><span>Subtotal ({{ cart.item_count }} item{% if cart.item_count != 1 %}s{% endif %})</span><b>{{ cart.items_subtotal_price | money }}</b></div>

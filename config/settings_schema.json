@@ -1492,6 +1492,12 @@
         "default": 80
       },
       {
+        "type": "number",
+        "id": "cw_free_ship",
+        "label": "Free delivery from (store currency, 0 = off)",
+        "default": 300
+      },
+      {
         "type": "text",
         "id": "cw_apply_url",
         "label": "Apply for trade link",

@@ -26,6 +26,19 @@
     <div style="display:flex;flex-direction:column;gap:16px">
       <div class="cw-kicker">{{ product.vendor | escape }}{% if product.type != blank %} · {{ product.type | escape }}{% endif %}</div>
       <h1>{{ product.title | escape }}</h1>
+      {%- if product.description != blank -%}
+      <div class="cw-kfacts cw-kfacts--yarn" data-cw-facts="#cw-ydesc-{{ section.id }}" hidden>
+        <div class="cw-kfact" data-cw-fact="Content|Composition|Fibre|Fiber|Material"><b></b><span>content</span></div>
+        <div class="cw-kfact" data-cw-fact="Yarn weight|Weight category|Thickness"><b></b><span>yarn weight</span></div>
+        <div class="cw-kfact" data-cw-fact="Weight/Length|Length/Weight|Ball weight|Length|Meterage"><b></b><span>per ball</span></div>
+        <div class="cw-kfact" data-cw-fact="Recommended needle size|Needle size|Needles"><b></b><span>needles</span></div>
+        <div class="cw-kfact" data-cw-fact="Recommended hook size|Hook size|Hook"><b></b><span>hook</span></div>
+        <div class="cw-kfact" data-cw-fact="Knitting tension|Tension|Gauge"><b></b><span>tension</span></div>
+        <div class="cw-kfact" data-cw-fact="Care|Washing"><b></b><span>care</span></div>
+        <div class="cw-kfact" data-cw-fact="Made in|Origin|Country of origin" data-cw-sep="opt"><b></b><span>made in</span></div>
+      </div>
+      <details class="cw-fold cw-fold--top"><summary>About this yarn</summary><div class="rte" id="cw-ydesc-{{ section.id }}">{{ product.description }}</div></details>
+      {%- endif -%}
       <div class="cw-ystats">
         {%- if cw_can == 'yes' -%}
           <div><small>Trade per pack</small><b>{% if product.price_varies %}from {% endif %}{{ product.price_min | money }}</b><small>{% if units > 1 %}{% render 'cw-rrp', product: product, variant: v, part: 'unit' %} per ball, {% endif %}excl. VAT</small></div>
@@ -81,9 +94,6 @@
       </div>
     {%- endfor -%}
   </div>
-  {%- if product.description != blank -%}
-    <details class="cw-fold" style="margin-bottom:24px"><summary>About {{ product.title | escape }}</summary><div class="rte">{{ product.description }}</div></details>
-  {%- endif -%}
 </section>
   {%- if cw_can == 'yes' -%}
   <div class="cw-bar" id="cw-ybar-{{ section.id }}">
@@ -175,8 +185,9 @@
       {%- endif -%}
       {%- if cw_can == 'yes' and product.images.size > 0 -%}
         <details class="cw-fold"><summary>For your shop</summary>
-          <div class="cw-fold__btns">
-            {%- for img in product.images limit: 12 -%}<a class="cw-btn cw-btn--sm" href="{{ img | image_url }}" target="_blank" rel="noopener" download>{%- render 'cw-icon', name: 'download', size: 16 -%}Photo {{ forloop.index }}</a>{%- endfor -%}
+          <div class="cw-fold__btns" data-cw-photos="{{ product.handle }}">
+            <button type="button" class="cw-btn cw-btn--sm cw-btn--navy" data-cw-photos-all>{%- render 'cw-icon', name: 'download', size: 16 -%}Download all ({{ product.images.size }})</button>
+            {%- for img in product.images -%}<a class="cw-btn cw-btn--sm" href="{{ img | image_url }}" target="_blank" rel="noopener" download>{%- render 'cw-icon', name: 'download', size: 16 -%}Photo {{ forloop.index }}</a>{%- endfor -%}
           </div>
           <p class="cw-small" style="margin:10px 0 0">Full-size product photos for your own website and listings.</p>
         </details>

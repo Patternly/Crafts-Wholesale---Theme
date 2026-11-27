@@ -3,7 +3,9 @@
 <script>
   window.CW = Object.assign(window.CW || {}, {
     money: {{ shop.money_format | json }},
+    sym: {{ cart.currency.symbol | json }},
     min: {{ settings.cw_min_order | default: 0 | times: 100 | round | json }},
+    free: {{ settings.cw_free_ship | default: 0 | times: 100 | round | json }},
     can: {% if cw_can == 'yes' %}true{% else %}false{% endif %}
   });
 </script>
