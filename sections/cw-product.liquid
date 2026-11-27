@@ -166,12 +166,6 @@
         <div class="cw-acct" style="padding:18px"><span style="flex:1 1 200px">Trade prices and ordering are for registered shops.</span><a class="cw-btn" href="{{ routes.account_login_url }}">Sign in</a><a class="cw-btn cw-btn--navy" href="{{ settings.cw_apply_url | default: '/pages/contact' }}">Apply</a></div>
       {%- endif -%}
 
-      <div class="cw-kfacts" data-cw-facts="#cw-desc-{{ section.id }}" hidden>
-        <div class="cw-kfact" data-cw-fact="Stitches|Number of stitches|Stitch count"><b></b><span>stitches</span></div>
-        <div class="cw-kfact" data-cw-fact="Colou?rs|Number of colou?rs|Threads"><b></b><span>colours</span></div>
-        <div class="cw-kfact" data-cw-fact="Finished size|Size|Design size"><b></b><span>finished size</span></div>
-        <div class="cw-kfact" data-cw-fact="Fabric|Canvas"><b></b><span>fabric</span></div>
-      </div>
 
       {%- for block in section.blocks -%}
         {%- case block.type -%}
