@@ -55,27 +55,11 @@
       </div>
     </div>
     {%- if menu.links.size > 0 -%}
-    <nav class="cw-wrap cw-nav" aria-label="Main">
+    <nav class="cw-wrap cw-nav" aria-label="Main categories">
       {%- for link in menu.links -%}
-        <div class="cw-nav__item">
-          {%- if link.links.size > 0 -%}
-            <a href="{{ link.url }}" class="cw-nav__link">{{ link.title | escape }}{%- render 'cw-icon', name: 'down', size: 14 -%}</a>
-            {%- assign mega = false -%}
-            {%- for c in link.links -%}{%- if c.links.size > 0 -%}{%- assign mega = true -%}{%- endif -%}{%- endfor -%}
-            <div class="cw-nav__drop{% if mega %} cw-nav__drop--mega{% endif %}">
-              {%- for c in link.links -%}
-                {%- if c.links.size > 0 -%}
-                  <div class="cw-nav__col"><b>{{ c.title | escape }}</b>{%- for g in c.links -%}<a href="{{ g.url }}">{{ g.title | escape }}</a>{%- endfor -%}<a href="{{ c.url }}" style="font-weight:600">All {{ c.title | escape }} →</a></div>
-                {%- else -%}
-                  <a href="{{ c.url }}">{{ c.title | escape }}</a>
-                {%- endif -%}
-              {%- endfor -%}
-              {%- unless mega -%}<a href="{{ link.url }}" style="font-weight:600">All {{ link.title | escape }} →</a>{%- endunless -%}
-            </div>
-          {%- else -%}
-            <a href="{{ link.url }}" class="cw-nav__link{% if link.title contains 'New' %} cw-nav__link--hi{% endif %}">{{ link.title | escape }}</a>
-          {%- endif -%}
-        </div>
+        {%- if link.links.size > 0 -%}
+          <button type="button" class="cw-nav__link" data-cw-menu="{{ forloop.index }}" aria-controls="cw-drawer">{{ link.title | escape }}</button>
+        {%- endif -%}
       {%- endfor -%}
     </nav>
     {%- endif -%}
@@ -83,20 +67,89 @@
 
   <div class="cw-drawer" id="cw-drawer">
     <div class="cw-drawer__bg" data-cw-menu-close></div>
-    <div class="cw-drawer__panel" role="dialog" aria-label="Menu">
-      <button type="button" class="cw-iconbtn" data-cw-menu-close aria-label="Close menu" style="align-self:flex-end">{%- render 'cw-icon', name: 'close', size: 22 -%}</button>
-      {%- for link in menu.links -%}
-        {%- if link.links.size > 0 -%}
-          <details><summary>{{ link.title | escape }}{%- render 'cw-icon', name: 'down', size: 16 -%}</summary>
-            {%- for c in link.links -%}<a href="{{ c.url }}">{{ c.title | escape }}</a>{%- for g in c.links -%}<a href="{{ g.url }}" style="padding-left:34px">{{ g.title | escape }}</a>{%- endfor -%}{%- endfor -%}
-            <a href="{{ link.url }}">All {{ link.title | escape }}</a>
-          </details>
-        {%- else -%}
-          <a href="{{ link.url }}">{{ link.title | escape }}</a>
-        {%- endif -%}
-      {%- endfor -%}
-      {%- if cw_can == 'yes' and section.settings.quick_order_url != blank -%}<a href="{{ section.settings.quick_order_url }}">Quick order</a>{%- endif -%}
-      {%- if customer -%}<a href="{{ routes.account_url }}">My account</a>{%- else -%}<a href="{{ routes.account_login_url }}">Sign in</a><a href="{{ settings.cw_apply_url | default: '/pages/contact' }}">Apply for a trade account</a>{%- endif -%}
+    <div class="cw-menu" role="dialog" aria-modal="true" aria-label="Menu">
+      <div class="cw-menu__list">
+        <div class="cw-menu__top">
+          <a href="{{ routes.root_url }}" class="cw-logo__name" style="font-size:2.4rem;text-decoration:none">{{ shop.name | escape }}</a>
+          <button type="button" class="cw-iconbtn cw-menu__x" data-cw-menu-close aria-label="Close menu">{%- render 'cw-icon', name: 'close', size: 22 -%}</button>
+        </div>
+        <nav class="cw-menu__links" aria-label="All pages">
+          {%- for link in menu.links -%}
+            {%- liquid
+              assign t = link.title | downcase
+              assign ic = ''
+              if t contains 'cross' or t contains 'kit' or t contains 'embroider'
+                assign ic = 'kit'
+              elsif t contains 'yarn' or t contains 'thread' or t contains 'wool'
+                assign ic = 'yarn'
+              elsif t contains 'fabric' or t contains 'aida' or t contains 'evenweave'
+                assign ic = 'fabric'
+              elsif t contains 'storage' or t contains 'organi' or t contains 'hoop' or t contains 'frame' or t contains 'accessor'
+                assign ic = 'hoop'
+              endif
+            -%}
+            {%- if link.links.size > 0 -%}
+              <button type="button" class="cw-menu__item" data-cw-pane="{{ forloop.index }}">
+                {%- if ic != blank -%}{%- render 'cw-icon', name: ic, size: 20 -%}{%- endif -%}
+                <span>{{ link.title | escape }}</span>
+                <span class="cw-menu__chev">{%- render 'cw-icon', name: 'down', size: 16 -%}</span>
+              </button>
+            {%- else -%}
+              <a class="cw-menu__item" href="{{ link.url }}">{%- if ic != blank -%}{%- render 'cw-icon', name: ic, size: 20 -%}{%- endif -%}<span>{{ link.title | escape }}</span></a>
+            {%- endif -%}
+          {%- endfor -%}
+        </nav>
+        <div class="cw-menu__foot">
+          {%- if cw_can == 'yes' and section.settings.quick_order_url != blank -%}<a class="cw-menu__mini" href="{{ section.settings.quick_order_url }}">{%- render 'cw-icon', name: 'list', size: 18 -%}Quick order by SKU</a>{%- endif -%}
+          {%- if customer -%}
+            <a class="cw-menu__mini" href="{{ routes.account_url }}">{%- render 'cw-icon', name: 'reorder', size: 18 -%}My orders</a>
+            <a class="cw-btn cw-btn--navy" href="{{ routes.account_url }}">My account</a>
+          {%- else -%}
+            <a class="cw-menu__mini" href="{{ settings.cw_apply_url | default: '/pages/contact' }}">{%- render 'cw-icon', name: 'doc', size: 18 -%}Apply for a trade account</a>
+            <a class="cw-btn cw-btn--navy" href="{{ routes.account_login_url }}">Sign in</a>
+          {%- endif -%}
+        </div>
+      </div>
+      <div class="cw-menu__panes">
+        {%- for link in menu.links -%}
+          {%- if link.links.size > 0 -%}
+            <section class="cw-menu__pane" data-pane="{{ forloop.index }}" hidden>
+              <div class="cw-menu__head">
+                <button type="button" class="cw-iconbtn cw-menu__back" data-cw-pane-back aria-label="Back to menu"><span style="transform:rotate(90deg);display:inline-flex">{%- render 'cw-icon', name: 'down', size: 20 -%}</span></button>
+                <h2>{{ link.title | escape }}</h2>
+                <a class="cw-btn cw-btn--teal" href="{{ link.url }}">Show all</a>
+                <button type="button" class="cw-iconbtn cw-menu__xd" data-cw-menu-close aria-label="Close menu">{%- render 'cw-icon', name: 'close', size: 22 -%}</button>
+              </div>
+              <div class="cw-menu__tiles">
+                {%- for c in link.links -%}
+                  {%- liquid
+                    assign img = blank
+                    if c.type == 'collection_link'
+                      assign img = c.object.featured_image
+                    elsif c.type == 'product_link'
+                      assign img = c.object.featured_image
+                    endif
+                  -%}
+                  <a class="cw-menu__tile" href="{{ c.url }}">
+                    <span class="cw-menu__pic">
+                      {%- if img != blank -%}{{ img | image_url: width: 300 | image_tag: loading: 'lazy', alt: '', width: 150, height: 150 }}{%- else -%}<span class="cw-menu__ini">{{ c.title | slice: 0 | upcase }}</span>{%- endif -%}
+                    </span>
+                    <span class="cw-menu__name">{{ c.title | escape }}</span>
+                  </a>
+                {%- endfor -%}
+              </div>
+              {%- for c in link.links -%}
+                {%- if c.links.size > 0 -%}
+                  <div class="cw-menu__group">
+                    <h3><a href="{{ c.url }}">{{ c.title | escape }}</a></h3>
+                    <div>{%- for g in c.links -%}<a href="{{ g.url }}">{{ g.title | escape }}</a>{%- endfor -%}</div>
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </section>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
     </div>
   </div>
 </div>

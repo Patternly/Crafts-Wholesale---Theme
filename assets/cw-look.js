@@ -183,13 +183,39 @@
     if (t) { var s = t.closest('.cw-side'); s.classList.toggle('is-closed'); t.setAttribute('aria-expanded', !s.classList.contains('is-closed')); }
   });
 
-  /* ---------- phone menu ---------- */
+  /* ---------- side menu ---------- */
+  function menuEl() { return document.getElementById('cw-drawer'); }
+  function showPane(n) {
+    var d = menuEl(); if (!d) return;
+    var m = d.querySelector('.cw-menu');
+    var panes = d.querySelectorAll('.cw-menu__pane');
+    if (!n && panes.length) n = panes[0].getAttribute('data-pane');
+    panes.forEach(function (p) { p.hidden = p.getAttribute('data-pane') !== String(n); });
+    d.querySelectorAll('[data-cw-pane]').forEach(function (b) { b.classList.toggle('is-on', b.getAttribute('data-cw-pane') === String(n)); });
+    document.querySelectorAll('.cw-nav__link[data-cw-menu]').forEach(function (b) { b.setAttribute('aria-expanded', b.getAttribute('data-cw-menu') === String(n) && d.classList.contains('is-open')); });
+    return m;
+  }
+  function closeMenu() {
+    var d = menuEl(); if (!d) return;
+    d.classList.remove('is-open'); document.body.style.overflow = '';
+    document.querySelectorAll('.cw-nav__link[aria-expanded]').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); });
+  }
   document.addEventListener('click', function (e) {
     var o = e.target.closest('[data-cw-menu]');
-    if (o) { var d = document.getElementById('cw-drawer'); if (d) { d.classList.add('is-open'); document.body.style.overflow = 'hidden'; } return; }
-    var c = e.target.closest('[data-cw-menu-close]');
-    if (c) { var d2 = document.getElementById('cw-drawer'); if (d2) { d2.classList.remove('is-open'); document.body.style.overflow = ''; } }
+    if (o) {
+      var d = menuEl(); if (!d) return;
+      var n = o.getAttribute('data-cw-menu');
+      d.classList.add('is-open'); document.body.style.overflow = 'hidden';
+      var m = showPane(n);
+      if (m) m.classList.toggle('is-sub', !!n);
+      return;
+    }
+    var p = e.target.closest('[data-cw-pane]');
+    if (p) { var m2 = showPane(p.getAttribute('data-cw-pane')); if (m2) m2.classList.add('is-sub'); return; }
+    if (e.target.closest('[data-cw-pane-back]')) { var m3 = document.querySelector('#cw-drawer .cw-menu'); if (m3) m3.classList.remove('is-sub'); return; }
+    if (e.target.closest('[data-cw-menu-close]')) closeMenu();
   });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
 
   /* ---------- colour grid (yarn) ---------- */
   function colours() {
