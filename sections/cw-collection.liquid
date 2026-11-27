@@ -32,9 +32,21 @@
   {%- paginate collection.products by section.settings.per_page -%}
   <section class="cw-wrap cw-colbody">
     {%- if collection.filters.size > 0 -%}
+    {%- liquid
+      assign n_active = 0
+      for f in collection.filters
+        if f.type == 'price_range'
+          if f.min_value.value or f.max_value.value
+            assign n_active = n_active | plus: 1
+          endif
+        else
+          assign n_active = n_active | plus: f.active_values.size
+        endif
+      endfor
+    -%}
     <aside class="cw-side is-closed">
-      <button type="button" class="cw-btn" data-cw-side-toggle aria-expanded="false" style="display:none" id="cw-side-btn">Filters</button>
-      <div class="cw-side__body" style="display:flex;flex-direction:column;gap:18px">
+      <button type="button" class="cw-btn cw-side__btn" data-cw-side-toggle aria-expanded="false" aria-controls="cw-side-body">{%- render 'cw-icon', name: 'list', size: 18 -%}<span>Filters{% if n_active > 0 %} ({{ n_active }}){% endif %}</span><span class="cw-side__chev">{%- render 'cw-icon', name: 'down', size: 16 -%}</span></button>
+      <div class="cw-side__body" id="cw-side-body">
         {%- for filter in collection.filters -%}
           {%- case filter.type -%}
             {%- when 'boolean', 'list' -%}
@@ -108,7 +120,7 @@
   </div>
   {%- endif -%}
 </div>
-<style>@media (max-width:900px){#cw-side-btn{display:inline-flex !important}}</style>
+
 
 {% schema %}
 {
