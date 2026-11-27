@@ -1,1 +1,504 @@
-{"sections":{"slideshow_dHjpyR":{"type":"slideshow","blocks":{"slide_jenhQ7":{"type":"slide","settings":{"image":"shopify:\/\/shop_images\/IMG_2838.jpg","image_overlay_opacity":0,"heading":"Luca-S Yarns","heading_size":"h1","subheading":"Explore luxury knitting","button_label":"Explore Now","link":"shopify:\/\/collections\/luca-s-yarns","button_style_secondary":false,"show_text_box":true,"box_align":"bottom-right","text_alignment":"center","text_alignment_mobile":"center","color_scheme":""}},"slide_LfTKQa":{"type":"slide","settings":{"image":"shopify:\/\/shop_images\/Beige_Aesthetic_Exclusive_Fashion_Wear_Collection_Clothing_Banner_1.jpg","image_overlay_opacity":0,"heading":"","heading_size":"h1","subheading":"","button_label":"","link":"","button_style_secondary":false,"show_text_box":false,"box_align":"middle-center","text_alignment":"center","text_alignment_mobile":"center","color_scheme":""}}},"block_order":["slide_jenhQ7","slide_LfTKQa"],"settings":{"layout":"grid","slide_height":"medium","slider_visual":"counter","auto_rotate":false,"change_slides_speed":5,"image_behavior":"none","show_text_below":true,"accessibility_info":"Slideshow about our brand"}},"image_with_text_QBwUwW":{"type":"image-with-text","blocks":{"heading_LFpXTm":{"type":"heading","settings":{"heading":"Accessories & Supplies","heading_size":"h2"}},"button_CPMMg3":{"type":"button","settings":{"button_label":"EXPLORE COLLECTION","button_link":"shopify:\/\/collections\/accessories","button_style_secondary":false}},"caption_QfiFWy":{"type":"caption","settings":{"caption":"#accesories #HOOPS #Scissors #Stranded cotton #new","text_style":"caption-with-letter-spacing","text_size":"medium"}}},"block_order":["heading_LFpXTm","button_CPMMg3","caption_QfiFWy"],"disabled":true,"custom_css":[".image-with-text__content {border: 1px solid black;}"],"settings":{"image":"shopify:\/\/shop_images\/MG_8262.jpg","height":"adapt","desktop_image_width":"large","layout":"text_first","image_behavior":"none","content_layout":"overlap","desktop_content_position":"middle","desktop_content_alignment":"center","mobile_content_alignment":"left","section_color_scheme":"scheme-5","color_scheme":"scheme-1","padding_top":36,"padding_bottom":0}},"featured_collection1":{"type":"featured-collection","custom_css":["h2 {text-align: center;}"],"settings":{"collection":"new-arrivals","products_to_show":25,"title":"<strong>NEW ARRIVALS | Discover our newest products available now.<\/strong>","heading_size":"h2","description":"","show_description":false,"description_style":"body","columns_desktop":6,"enable_desktop_slider":true,"full_width":false,"show_view_all":true,"view_all_style":"link","color_scheme":"scheme-2","image_ratio":"square","image_shape":"default","show_secondary_image":false,"show_vendor":true,"show_rating":false,"quick_add":"bulk","columns_mobile":"2","swipe_on_mobile":true,"padding_top":44,"padding_bottom":52}},"featured_collection_TKMqRA":{"type":"featured-collection","settings":{"collection":"yarn","products_to_show":25,"title":"Yarns","heading_size":"h1","description":"","show_description":false,"description_style":"body","columns_desktop":6,"enable_desktop_slider":true,"full_width":false,"show_view_all":true,"view_all_style":"link","color_scheme":"scheme-2","image_ratio":"adapt","image_shape":"default","show_secondary_image":false,"show_vendor":false,"show_rating":false,"quick_add":"none","columns_mobile":"2","swipe_on_mobile":true,"padding_top":36,"padding_bottom":36}},"collection_list":{"type":"collection-list","blocks":{"featured_collection1":{"type":"featured_collection","settings":{"collection":"cross-stitch-kits"}},"featured_collection2":{"type":"featured_collection","settings":{"collection":"wonderland-crafts"}},"featured_collection3":{"type":"featured_collection","settings":{"collection":"hoops"}},"featured_collection4":{"type":"featured_collection","settings":{"collection":"fabric-canvas"}},"featured_collection5":{"type":"featured_collection","settings":{"collection":"accessories"}}},"block_order":["featured_collection1","featured_collection2","featured_collection3","featured_collection4","featured_collection5"],"settings":{"title":"<em>Shop by Collections<\/em>","heading_size":"h1","image_ratio":"square","columns_desktop":5,"color_scheme":"scheme-3","show_view_all":false,"columns_mobile":"2","swipe_on_mobile":true,"padding_top":48,"padding_bottom":60}},"multicolumn_4pRGKz":{"type":"multicolumn","blocks":{"column_zBcG9P":{"type":"column","settings":{"title":"<strong>In-Stock Policy<\/strong>","text":"<p>Our store proudly boasts a comprehensive inventory of in-stock products, all readily available for immediate shipment upon order placement.<\/p>","link_label":"","link":""}},"column_KeAAhU":{"type":"column","settings":{"title":"<strong>Lightning-Fast Delivery on Every Order.<\/strong>","text":"<p>Process time: 1-2 business days. Delivery to UK: 2-3 business days. Shipping to US & Europe: 7 business days.<\/p><p><\/p>","link_label":"","link":""}},"column_rYBKWB":{"type":"column","settings":{"title":"<strong>Minimum Purchase<\/strong>","text":"<p>Take advantage of the remarkably low minimum order requirement of just £80 + VAT per order, which allows for frequent ordering and direct shipping to your customer.<\/p>","link_label":"","link":""}}},"block_order":["column_zBcG9P","column_KeAAhU","column_rYBKWB"],"custom_css":[".multicolumn {background-color: f1f1f1 !important;}"],"settings":{"title":"","heading_size":"h1","image_width":"full","image_ratio":"adapt","button_label":"","button_link":"","columns_desktop":3,"column_alignment":"center","background_style":"primary","color_scheme":"scheme-2","columns_mobile":"1","swipe_on_mobile":false,"padding_top":12,"padding_bottom":36}},"rich_text_ARUXW9":{"type":"rich-text","blocks":{"heading_BtxyMf":{"type":"heading","settings":{"heading":"<strong>COOPERATION 🤝🏻<\/strong>","heading_size":"h1"}},"text_CVXeAL":{"type":"text","settings":{"text":"<h3>Thank you for visiting our website! Hope that here you will find products that are interesting for you!<\/h3><p><strong>Crafts Wholesale <\/strong>is a supplier of goods for hobbies and needlework in UK and worldwide. We work only with legal entities and individual entrepreneurs. Our warehouse is located in United Kingdom. Wholesale prices are indicated on the website and can be seen only after signing up and confirmation from our managers. You can always get assistance from a personal manager who will offer you favourable terms of cooperation and help deal with all your questions.<\/p>"}},"button_rhfPH6":{"type":"button","settings":{"button_label":"Wholesale Inquiry","button_link":"shopify:\/\/pages\/contact","button_style_secondary":false,"button_label_2":"","button_link_2":"","button_style_secondary_2":false}}},"block_order":["heading_BtxyMf","text_CVXeAL","button_rhfPH6"],"settings":{"desktop_content_position":"center","content_alignment":"center","color_scheme":"","full_width":true,"padding_top":40,"padding_bottom":52}}},"order":["slideshow_dHjpyR","image_with_text_QBwUwW","featured_collection1","featured_collection_TKMqRA","collection_list","multicolumn_4pRGKz","rich_text_ARUXW9"]}
+{
+  "sections": {
+    "cw_doors": {
+      "type": "cw-doors",
+      "settings": {
+        "pad_top": 28
+      },
+      "blocks": {
+        "k": {
+          "type": "door",
+          "settings": {
+            "collection": "cross-stitch-kits",
+            "title": "Kits",
+            "text": "Cross stitch and petit point kits",
+            "button": "Shop kits →"
+          }
+        },
+        "y": {
+          "type": "door",
+          "settings": {
+            "collection": "yarn",
+            "image": "shopify://shop_images/IMG_2838.jpg",
+            "title": "Yarns",
+            "text": "Packs of 5 and 10, every colour in one grid",
+            "button": "Shop yarns →"
+          }
+        }
+      },
+      "block_order": [
+        "k",
+        "y"
+      ]
+    },
+    "cw_account": {
+      "type": "cw-account",
+      "settings": {
+        "quick_order_url": "/cart#quick-order",
+        "guest_title": "Trade prices for registered shops",
+        "guest_text": "We supply shops and businesses. Sign in or apply to see prices and order."
+      }
+    },
+    "cw_new": {
+      "type": "cw-rail",
+      "settings": {
+        "collection": "new-arrivals",
+        "title": "New in",
+        "link_text": "See all new products",
+        "count": 10,
+        "show_vendor": true
+      }
+    },
+    "cw_yarns": {
+      "type": "cw-rail",
+      "settings": {
+        "collection": "yarn",
+        "title": "Yarns",
+        "link_text": "See all yarns",
+        "count": 10,
+        "show_vendor": false
+      }
+    },
+    "cw_cats": {
+      "type": "cw-cats",
+      "settings": {
+        "title": "Shop by category"
+      },
+      "blocks": {
+        "c1": {
+          "type": "cat",
+          "settings": {
+            "collection": "cross-stitch-kits",
+            "icon": "kit"
+          }
+        },
+        "c2": {
+          "type": "cat",
+          "settings": {
+            "collection": "wonderland-crafts",
+            "icon": "kit"
+          }
+        },
+        "c3": {
+          "type": "cat",
+          "settings": {
+            "collection": "luca-s-yarns",
+            "icon": "yarn"
+          }
+        },
+        "c4": {
+          "type": "cat",
+          "settings": {
+            "collection": "hoops",
+            "icon": "hoop"
+          }
+        },
+        "c5": {
+          "type": "cat",
+          "settings": {
+            "collection": "fabric-canvas",
+            "icon": "fabric"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5"
+      ]
+    },
+    "cw_facts": {
+      "type": "cw-facts",
+      "settings": {
+        "last": false
+      },
+      "blocks": {
+        "f1": {
+          "type": "fact",
+          "settings": {
+            "number": "£80",
+            "label": "minimum order + VAT"
+          }
+        },
+        "f2": {
+          "type": "fact",
+          "settings": {
+            "number": "1–2 days",
+            "label": "to dispatch, from stock"
+          }
+        },
+        "f3": {
+          "type": "fact",
+          "settings": {
+            "number": "2–3 days",
+            "label": "UK delivery"
+          }
+        },
+        "f4": {
+          "type": "fact",
+          "settings": {
+            "number": "7 days",
+            "label": "Europe & USA"
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4"
+      ]
+    },
+    "cw_about": {
+      "type": "cw-text",
+      "settings": {
+        "title": "Working with us",
+        "text": "<p><strong>Crafts Wholesale</strong> supplies hobby and needlework goods in the UK and worldwide. We work only with registered businesses and sole traders. Our warehouse is in the United Kingdom. Wholesale prices show once you have signed up and our managers have confirmed your account. Your personal manager can help with terms and any questions.</p>",
+        "button": "Wholesale enquiry",
+        "link": "shopify://pages/contact"
+      }
+    },
+    "slideshow_dHjpyR": {
+      "type": "slideshow",
+      "blocks": {
+        "slide_jenhQ7": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/IMG_2838.jpg",
+            "image_overlay_opacity": 0,
+            "heading": "Luca-S Yarns",
+            "heading_size": "h1",
+            "subheading": "Explore luxury knitting",
+            "button_label": "Explore Now",
+            "link": "shopify://collections/luca-s-yarns",
+            "button_style_secondary": false,
+            "show_text_box": true,
+            "box_align": "bottom-right",
+            "text_alignment": "center",
+            "text_alignment_mobile": "center",
+            "color_scheme": ""
+          }
+        },
+        "slide_LfTKQa": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/Beige_Aesthetic_Exclusive_Fashion_Wear_Collection_Clothing_Banner_1.jpg",
+            "image_overlay_opacity": 0,
+            "heading": "",
+            "heading_size": "h1",
+            "subheading": "",
+            "button_label": "",
+            "link": "",
+            "button_style_secondary": false,
+            "show_text_box": false,
+            "box_align": "middle-center",
+            "text_alignment": "center",
+            "text_alignment_mobile": "center",
+            "color_scheme": ""
+          }
+        }
+      },
+      "block_order": [
+        "slide_jenhQ7",
+        "slide_LfTKQa"
+      ],
+      "settings": {
+        "layout": "grid",
+        "slide_height": "medium",
+        "slider_visual": "counter",
+        "auto_rotate": false,
+        "change_slides_speed": 5,
+        "image_behavior": "none",
+        "show_text_below": true,
+        "accessibility_info": "Slideshow about our brand"
+      },
+      "disabled": true
+    },
+    "image_with_text_QBwUwW": {
+      "type": "image-with-text",
+      "blocks": {
+        "heading_LFpXTm": {
+          "type": "heading",
+          "settings": {
+            "heading": "Accessories & Supplies",
+            "heading_size": "h2"
+          }
+        },
+        "button_CPMMg3": {
+          "type": "button",
+          "settings": {
+            "button_label": "EXPLORE COLLECTION",
+            "button_link": "shopify://collections/accessories",
+            "button_style_secondary": false
+          }
+        },
+        "caption_QfiFWy": {
+          "type": "caption",
+          "settings": {
+            "caption": "#accesories #HOOPS #Scissors #Stranded cotton #new",
+            "text_style": "caption-with-letter-spacing",
+            "text_size": "medium"
+          }
+        }
+      },
+      "block_order": [
+        "heading_LFpXTm",
+        "button_CPMMg3",
+        "caption_QfiFWy"
+      ],
+      "disabled": true,
+      "custom_css": [
+        ".image-with-text__content {border: 1px solid black;}"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/MG_8262.jpg",
+        "height": "adapt",
+        "desktop_image_width": "large",
+        "layout": "text_first",
+        "image_behavior": "none",
+        "content_layout": "overlap",
+        "desktop_content_position": "middle",
+        "desktop_content_alignment": "center",
+        "mobile_content_alignment": "left",
+        "section_color_scheme": "scheme-5",
+        "color_scheme": "scheme-1",
+        "padding_top": 36,
+        "padding_bottom": 0
+      }
+    },
+    "featured_collection1": {
+      "type": "featured-collection",
+      "custom_css": [
+        "h2 {text-align: center;}"
+      ],
+      "settings": {
+        "collection": "new-arrivals",
+        "products_to_show": 25,
+        "title": "<strong>NEW ARRIVALS | Discover our newest products available now.</strong>",
+        "heading_size": "h2",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "columns_desktop": 6,
+        "enable_desktop_slider": true,
+        "full_width": false,
+        "show_view_all": true,
+        "view_all_style": "link",
+        "color_scheme": "scheme-2",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": false,
+        "show_vendor": true,
+        "show_rating": false,
+        "quick_add": "bulk",
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "padding_top": 44,
+        "padding_bottom": 52
+      },
+      "disabled": true
+    },
+    "featured_collection_TKMqRA": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "yarn",
+        "products_to_show": 25,
+        "title": "Yarns",
+        "heading_size": "h1",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "columns_desktop": 6,
+        "enable_desktop_slider": true,
+        "full_width": false,
+        "show_view_all": true,
+        "view_all_style": "link",
+        "color_scheme": "scheme-2",
+        "image_ratio": "adapt",
+        "image_shape": "default",
+        "show_secondary_image": false,
+        "show_vendor": false,
+        "show_rating": false,
+        "quick_add": "none",
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "padding_top": 36,
+        "padding_bottom": 36
+      },
+      "disabled": true
+    },
+    "collection_list": {
+      "type": "collection-list",
+      "blocks": {
+        "featured_collection1": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "cross-stitch-kits"
+          }
+        },
+        "featured_collection2": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "wonderland-crafts"
+          }
+        },
+        "featured_collection3": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "hoops"
+          }
+        },
+        "featured_collection4": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "fabric-canvas"
+          }
+        },
+        "featured_collection5": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "accessories"
+          }
+        }
+      },
+      "block_order": [
+        "featured_collection1",
+        "featured_collection2",
+        "featured_collection3",
+        "featured_collection4",
+        "featured_collection5"
+      ],
+      "settings": {
+        "title": "<em>Shop by Collections</em>",
+        "heading_size": "h1",
+        "image_ratio": "square",
+        "columns_desktop": 5,
+        "color_scheme": "scheme-3",
+        "show_view_all": false,
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "padding_top": 48,
+        "padding_bottom": 60
+      },
+      "disabled": true
+    },
+    "multicolumn_4pRGKz": {
+      "type": "multicolumn",
+      "blocks": {
+        "column_zBcG9P": {
+          "type": "column",
+          "settings": {
+            "title": "<strong>In-Stock Policy</strong>",
+            "text": "<p>Our store proudly boasts a comprehensive inventory of in-stock products, all readily available for immediate shipment upon order placement.</p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "column_KeAAhU": {
+          "type": "column",
+          "settings": {
+            "title": "<strong>Lightning-Fast Delivery on Every Order.</strong>",
+            "text": "<p>Process time: 1-2 business days. Delivery to UK: 2-3 business days. Shipping to US & Europe: 7 business days.</p><p></p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "column_rYBKWB": {
+          "type": "column",
+          "settings": {
+            "title": "<strong>Minimum Purchase</strong>",
+            "text": "<p>Take advantage of the remarkably low minimum order requirement of just £80 + VAT per order, which allows for frequent ordering and direct shipping to your customer.</p>",
+            "link_label": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "column_zBcG9P",
+        "column_KeAAhU",
+        "column_rYBKWB"
+      ],
+      "custom_css": [
+        ".multicolumn {background-color: f1f1f1 !important;}"
+      ],
+      "settings": {
+        "title": "",
+        "heading_size": "h1",
+        "image_width": "full",
+        "image_ratio": "adapt",
+        "button_label": "",
+        "button_link": "",
+        "columns_desktop": 3,
+        "column_alignment": "center",
+        "background_style": "primary",
+        "color_scheme": "scheme-2",
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 12,
+        "padding_bottom": 36
+      },
+      "disabled": true
+    },
+    "rich_text_ARUXW9": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_BtxyMf": {
+          "type": "heading",
+          "settings": {
+            "heading": "<strong>COOPERATION 🤝🏻</strong>",
+            "heading_size": "h1"
+          }
+        },
+        "text_CVXeAL": {
+          "type": "text",
+          "settings": {
+            "text": "<h3>Thank you for visiting our website! Hope that here you will find products that are interesting for you!</h3><p><strong>Crafts Wholesale </strong>is a supplier of goods for hobbies and needlework in UK and worldwide. We work only with legal entities and individual entrepreneurs. Our warehouse is located in United Kingdom. Wholesale prices are indicated on the website and can be seen only after signing up and confirmation from our managers. You can always get assistance from a personal manager who will offer you favourable terms of cooperation and help deal with all your questions.</p>"
+          }
+        },
+        "button_rhfPH6": {
+          "type": "button",
+          "settings": {
+            "button_label": "Wholesale Inquiry",
+            "button_link": "shopify://pages/contact",
+            "button_style_secondary": false,
+            "button_label_2": "",
+            "button_link_2": "",
+            "button_style_secondary_2": false
+          }
+        }
+      },
+      "block_order": [
+        "heading_BtxyMf",
+        "text_CVXeAL",
+        "button_rhfPH6"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      },
+      "disabled": true
+    }
+  },
+  "order": [
+    "cw_doors",
+    "cw_account",
+    "cw_new",
+    "cw_yarns",
+    "cw_cats",
+    "cw_facts",
+    "cw_about",
+    "slideshow_dHjpyR",
+    "image_with_text_QBwUwW",
+    "featured_collection1",
+    "featured_collection_TKMqRA",
+    "collection_list",
+    "multicolumn_4pRGKz",
+    "rich_text_ARUXW9"
+  ]
+}

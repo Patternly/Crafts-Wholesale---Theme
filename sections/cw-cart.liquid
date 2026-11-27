@@ -1,0 +1,94 @@
+{%- capture cw_can -%}{%- render 'cw-can' -%}{%- endcapture -%}
+{%- liquid
+  assign min = settings.cw_min_order | default: 0 | times: 100 | round
+  assign left = min | minus: cart.total_price
+  assign pct = 100
+  if min > 0
+    assign pct = cart.total_price | times: 100 | divided_by: min
+    if pct > 100
+      assign pct = 100
+    endif
+  endif
+-%}
+<div class="cw">
+<section class="cw-wrap cw-sec--last" style="padding-top:28px">
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+    <h1 style="font-size:5.2rem;line-height:1">Basket</h1>
+    {%- if cart.item_count > 0 -%}
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" class="cw-btn" onclick="window.print()">{%- render 'cw-icon', name: 'doc' -%}Print / save as PDF</button>
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if cw_can == 'yes' and section.settings.quick -%}
+  <div class="cw-qo" id="quick-order" data-cw-qo data-cw-qo-reload>
+    <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline">
+      <h2 class="cw-serif" style="font-size:2.8rem">Quick order by SKU</h2>
+      <span class="cw-small">One line per product: SKU, then quantity. Pasting from Excel works too.</span>
+    </div>
+    <textarea aria-label="SKUs and quantities" placeholder="B717 3&#10;B718 2&#10;5PK-Luca-S-Palermo-509 4"></textarea>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><button type="button" class="cw-btn cw-btn--navy" data-cw-qo-add>Add lines to basket</button><span class="cw-qo__msg" data-cw-qo-msg role="status"></span></div>
+  </div>
+  {%- endif -%}
+
+  {%- if cart.item_count == 0 -%}
+    <div class="cw-empty" style="margin-top:20px"><h2 class="cw-h2">Your basket is empty</h2><p class="cw-muted">Start with <a href="{{ routes.all_products_collection_url }}">all products</a>{% if cw_can == 'yes' %} or paste SKUs above{% endif %}.</p></div>
+  {%- else -%}
+  <form action="{{ routes.cart_url }}" method="post" class="cw-cart">
+    <div class="cw-cart__lines">
+      <div class="cw-cline cw-hide-m" style="border-top:0"><span></span><span class="cw-th">Product</span><span class="cw-th">Price</span><span class="cw-th">Quantity</span><span class="cw-th">Total</span><span></span></div>
+      {%- for item in cart.items -%}
+        <div class="cw-cline" data-cw-cline data-key="{{ item.key }}">
+          <a href="{{ item.url }}" tabindex="-1">{%- if item.image -%}{{ item.image | image_url: width: 140 | image_tag: loading: 'lazy', alt: '', width: 64, height: 64 }}{%- endif -%}</a>
+          <div style="min-width:0">
+            <a href="{{ item.url }}" style="font-weight:600;text-decoration:none;color:var(--cw-ink)">{{ item.product.title | escape }}</a>
+            <div class="cw-small">{% unless item.product.has_only_default_variant %}{{ item.variant.title | escape }} · {% endunless %}SKU {{ item.sku | default: '—' | escape }} · {% render 'cw-stock', variant: item.variant, product: item.product %}</div>
+            {%- for d in item.line_level_discount_allocations -%}<div class="cw-small" style="color:var(--cw-ok)">{{ d.discount_application.title | escape }} (−{{ d.amount | money }})</div>{%- endfor -%}
+          </div>
+          <div class="cw-c-col cw-c-price">{{ item.final_price | money }}</div>
+          <div class="cw-c-col"><div class="cw-step" data-cw-step><button type="button" data-d="-1" aria-label="Less">−</button><input type="number" min="0" value="{{ item.quantity }}" inputmode="numeric" aria-label="Quantity of {{ item.product.title | escape }}" data-cw-qty><button type="button" data-d="1" aria-label="More">+</button></div></div>
+          <div class="cw-c-col" style="font-weight:700;color:var(--cw-navy)">{{ item.final_line_price | money }}</div>
+          <button type="button" class="cw-x" data-cw-remove aria-label="Remove {{ item.product.title | escape }}">{%- render 'cw-icon', name: 'trash' -%}</button>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <aside class="cw-sum">
+      <div class="cw-sum__box">
+        {%- if min > 0 -%}
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <b>{% if left > 0 %}Add {{ left | money }} to reach the {{ min | money_without_trailing_zeros }} minimum{% else %}Minimum order reached{% endif %}</b>
+            <div class="cw-sum__track{% if left <= 0 %} is-met{% endif %}"><i style="width:{{ pct }}%"></i></div>
+          </div>
+        {%- endif -%}
+        <div class="cw-sum__row"><span>Subtotal ({{ cart.item_count }} item{% if cart.item_count != 1 %}s{% endif %})</span><b>{{ cart.items_subtotal_price | money }}</b></div>
+        {%- for d in cart.cart_level_discount_applications -%}<div class="cw-sum__row" style="color:var(--cw-ok)"><span>{{ d.title | escape }}</span><span>−{{ d.total_allocated_amount | money }}</span></div>{%- endfor -%}
+        <div class="cw-sum__row cw-muted"><span>VAT and delivery</span><span>Added at checkout</span></div>
+        <div class="cw-sum__row cw-sum__total"><b>Total excl. VAT</b><b>{{ cart.total_price | money }}</b></div>
+        <label class="cw-field">Your order reference (PO)<input type="text" data-cw-attr="PO number" value="{{ cart.attributes['PO number'] | escape }}" placeholder="Optional, e.g. PO-2611" autocomplete="off"></label>
+        {%- if section.settings.note -%}<label class="cw-field">Note for the warehouse<textarea rows="2" data-cw-cartnote>{{ cart.note | escape }}</textarea></label>{%- endif -%}
+        {%- if cw_can == 'yes' -%}
+          <button type="submit" name="checkout" class="cw-btn cw-btn--navy cw-btn--lg"{% if section.settings.block_under_min and left > 0 %} disabled{% endif %}>Go to checkout</button>
+        {%- else -%}
+          <a class="cw-btn cw-btn--navy cw-btn--lg" href="{{ routes.account_login_url }}">Sign in to order</a>
+        {%- endif -%}
+        {%- if additional_checkout_buttons and section.settings.express -%}<div>{{ content_for_additional_checkout_buttons }}</div>{%- endif -%}
+      </div>
+      <div class="cw-note">{{ settings.cw_dispatch }}. {{ settings.cw_delivery }}.</div>
+    </aside>
+  </form>
+  {%- endif -%}
+</section>
+</div>
+{% schema %}
+{
+  "name": "CW basket",
+  "settings": [
+    { "type": "checkbox", "id": "quick", "label": "Show quick order by SKU", "default": true },
+    { "type": "checkbox", "id": "note", "label": "Show note for the warehouse", "default": true },
+    { "type": "checkbox", "id": "block_under_min", "label": "Checkout only from the minimum order", "default": true },
+    { "type": "checkbox", "id": "express", "label": "Show express checkout buttons", "default": false }
+  ]
+}
+{% endschema %}

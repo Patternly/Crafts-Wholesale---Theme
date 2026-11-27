@@ -1,0 +1,31 @@
+<footer class="cw cw-footer">
+  <div class="cw-wrap">
+    <div class="cw-footer__col" style="max-width:340px">
+      <div class="cw-footer__brand">{{ shop.name | escape }}</div>
+      <div style="opacity:.85">{{ section.settings.text | escape }}</div>
+    </div>
+    {%- for block in section.blocks -%}
+      {%- assign m = linklists[block.settings.menu] -%}
+      <div class="cw-footer__col" {{ block.shopify_attributes }}>
+        <b>{{ block.settings.title | default: m.title | escape }}</b>
+        {%- for l in m.links -%}<a href="{{ l.url }}">{{ l.title | escape }}</a>{%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+  <div class="cw-footer__copy"><div class="cw-wrap" style="display:flex;gap:16px;flex-wrap:wrap">© {{ 'now' | date: '%Y' }} {{ shop.name | escape }}{% if section.settings.legal != blank %} · {{ section.settings.legal | escape }}{% endif %}{%- for policy in shop.policies -%}{%- if policy != blank -%}<a href="{{ policy.url }}">{{ policy.title | escape }}</a>{%- endif -%}{%- endfor -%}</div></div>
+</footer>
+{% schema %}
+{
+  "name": "CW footer",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "text", "label": "About text", "default": "Trade supplier of kits, yarns and needlework supplies. Warehouse in the United Kingdom." },
+    { "type": "text", "id": "legal", "label": "Company line" }
+  ],
+  "blocks": [ { "type": "menu", "name": "Menu column", "settings": [
+    { "type": "text", "id": "title", "label": "Title (empty = menu name)" },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" }
+  ] } ],
+  "presets": [ { "name": "CW footer" } ]
+}
+{% endschema %}

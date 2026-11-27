@@ -1,0 +1,38 @@
+{%- capture cw_can -%}{%- render 'cw-can' -%}{%- endcapture -%}
+<div class="cw"><section class="cw-wrap" style="padding-top: 20px">
+  <div class="cw-acct">
+    {%- if customer -%}
+      <div style="flex: 1 1 240px">
+        <div class="cw-small" style="text-transform:uppercase;letter-spacing:.1em">Your account</div>
+        <div class="cw-serif" style="font-size:2.8rem;color:var(--cw-navy);line-height:1.2">Welcome back, {{ customer.default_address.company | default: customer.first_name | default: customer.name | escape }}</div>
+      </div>
+      <div class="cw-acct__acts">
+        {%- assign last = customer.orders.first -%}
+        <a href="{% if last %}{{ last.customer_url }}{% else %}{{ routes.account_url }}{% endif %}" class="cw-btn">{%- render 'cw-icon', name: 'reorder' -%}{% if last %}Last order {{ last.name }}{% else %}Your orders{% endif %}</a>
+        {%- if cw_can == 'yes' -%}<a href="{{ section.settings.quick_order_url }}" class="cw-btn">{%- render 'cw-icon', name: 'list' -%}Quick order by SKU</a>{%- endif -%}
+        {%- if settings.cw_price_list_url != blank and cw_can == 'yes' -%}<a href="{{ settings.cw_price_list_url }}" class="cw-btn">{%- render 'cw-icon', name: 'download' -%}Price list (CSV)</a>{%- endif -%}
+        <a href="{{ routes.account_url }}" class="cw-btn">{%- render 'cw-icon', name: 'doc' -%}Orders &amp; invoices</a>
+      </div>
+    {%- else -%}
+      <div style="flex: 1 1 320px">
+        <div class="cw-serif" style="font-size:2.8rem;color:var(--cw-navy);line-height:1.2">{{ section.settings.guest_title | escape }}</div>
+        <div class="cw-muted">{{ section.settings.guest_text | escape }}</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a href="{{ routes.account_login_url }}" class="cw-btn">{%- render 'cw-icon', name: 'user' -%}Sign in</a>
+        <a href="{{ settings.cw_apply_url | default: '/pages/contact' }}" class="cw-btn cw-btn--navy">Apply for a trade account</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section></div>
+{% schema %}
+{
+  "name": "CW account bar",
+  "settings": [
+    { "type": "url", "id": "quick_order_url", "label": "Quick order page", "default": "/cart" },
+    { "type": "text", "id": "guest_title", "label": "Title for visitors", "default": "Trade prices for registered shops" },
+    { "type": "text", "id": "guest_text", "label": "Text for visitors", "default": "We supply shops and businesses. Sign in or apply to see prices and order." }
+  ],
+  "presets": [ { "name": "CW account bar" } ]
+}
+{% endschema %}

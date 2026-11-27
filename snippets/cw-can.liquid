@@ -1,0 +1,21 @@
+{%- comment -%}
+  Prints "yes" when the visitor may see trade prices and order (theme setting "Who sees prices and can order").
+  Use: {%- capture cw_can -%}{%- render 'cw-can' -%}{%- endcapture -%} then {% if cw_can == 'yes' %}.
+{%- endcomment -%}
+{%- liquid
+  case settings.cw_price_rule
+    when 'everyone'
+      echo 'yes'
+    when 'tagged'
+      if customer
+        assign tag = settings.cw_trade_tag | default: 'Customer'
+        if customer.b2b? or customer.tags contains tag
+          echo 'yes'
+        endif
+      endif
+    else
+      if customer
+        echo 'yes'
+      endif
+  endcase
+-%}

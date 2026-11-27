@@ -1,0 +1,35 @@
+{%- comment -%} One product as a card with quantity + Add. render 'cw-card', product: p, can: 'yes', show_vendor: true {%- endcomment -%}
+{%- liquid
+  assign v = product.selected_or_first_available_variant
+  assign multi = false
+  if product.has_only_default_variant == false and product.variants.size > 1
+    assign multi = true
+  endif
+-%}
+<div class="cw-card" data-cw-item data-variant="{{ v.id }}">
+  <a class="cw-card__img" href="{{ product.url }}" tabindex="-1">
+    {%- if product.featured_image -%}{{ product.featured_image | image_url: width: 500 | image_tag: loading: 'lazy', alt: product.featured_image.alt, sizes: '(min-width: 990px) 260px, 70vw' }}{%- endif -%}
+    {%- if multi == false -%}{%- render 'cw-stock', variant: v, product: product, style: 'tag' -%}{%- endif -%}
+  </a>
+  <div class="cw-card__body">
+    <div class="cw-card__meta">{% if show_vendor != false %}{{ product.vendor | escape }}{% endif %}{% if v.sku != blank and multi == false %} · {{ v.sku | escape }}{% endif %}{% if multi %} · {{ product.variants.size }} {{ product.options.first | downcase | escape }}s{% endif %}</div>
+    <a class="cw-card__title" href="{{ product.url }}">{{ product.title | escape }}</a>
+    {%- if can == 'yes' -%}
+      <div class="cw-card__price"><b>{% if multi and product.price_varies %}from {% endif %}{{ product.price_min | money }}</b><span class="cw-small">excl. VAT</span></div>
+      {%- capture rrp -%}{%- render 'cw-rrp', product: product, variant: v, part: 'rrp' -%}{%- endcapture -%}
+      {%- if rrp != blank -%}<div class="cw-small">RRP {{ rrp }} · <b class="cw-margin">margin {% render 'cw-rrp', product: product, variant: v, part: 'margin' %}</b></div>{%- endif -%}
+      <div class="cw-card__buy">
+        {%- if multi -%}
+          <a class="cw-btn cw-btn--teal" href="{{ product.url }}">Choose {{ product.options.first | downcase | escape }}s</a>
+        {%- elsif v.available -%}
+          <div class="cw-step" data-cw-step><button type="button" data-d="-1" aria-label="Less">−</button><input type="number" min="1" value="1" inputmode="numeric" aria-label="Quantity" data-cw-qty><button type="button" data-d="1" aria-label="More">+</button></div>
+          <button type="button" class="cw-btn cw-btn--teal" data-cw-add>Add</button>
+        {%- else -%}
+          <span class="cw-btn" aria-disabled="true" style="opacity:.6;flex:1">Unavailable</span>
+        {%- endif -%}
+      </div>
+    {%- else -%}
+      <a class="cw-locked" href="{{ routes.account_login_url }}">{%- render 'cw-icon', name: 'lock', size: 16 -%} Sign in for trade price</a>
+    {%- endif -%}
+  </div>
+</div>

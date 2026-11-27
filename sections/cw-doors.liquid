@@ -1,0 +1,33 @@
+<div class="cw"><section class="cw-wrap" style="padding-top: {{ section.settings.pad_top }}px">
+  <div class="cw-doors">
+    {%- for block in section.blocks -%}
+      {%- assign col = block.settings.collection -%}
+      <a href="{{ block.settings.link | default: col.url | default: '#' }}" class="cw-door" {{ block.shopify_attributes }}>
+        {%- assign img = block.settings.image | default: col.featured_image -%}
+        {%- if img -%}{{ img | image_url: width: 1400 | image_tag: loading: 'eager', alt: block.settings.title, sizes: '(min-width: 990px) 640px, 100vw' }}{%- endif -%}
+        <span class="cw-door__box">
+          <span><span class="cw-door__title">{{ block.settings.title | default: col.title | escape }}</span>{%- if block.settings.text != blank -%}<span class="cw-muted" style="display:block;margin-top:6px">{{ block.settings.text | escape }}</span>{%- endif -%}</span>
+          <span class="cw-btn cw-btn--navy">{{ block.settings.button | escape }}</span>
+        </span>
+      </a>
+    {%- endfor -%}
+  </div>
+</section></div>
+{% schema %}
+{
+  "name": "CW category doors",
+  "max_blocks": 3,
+  "settings": [ { "type": "range", "id": "pad_top", "label": "Space above", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 28 } ],
+  "blocks": [
+    { "type": "door", "name": "Door", "settings": [
+      { "type": "collection", "id": "collection", "label": "Collection" },
+      { "type": "url", "id": "link", "label": "Link (empty = the collection)" },
+      { "type": "image_picker", "id": "image", "label": "Picture (empty = collection picture)" },
+      { "type": "text", "id": "title", "label": "Title", "default": "Kits" },
+      { "type": "text", "id": "text", "label": "Line under the title" },
+      { "type": "text", "id": "button", "label": "Button", "default": "Shop now →" }
+    ] }
+  ],
+  "presets": [ { "name": "CW category doors", "blocks": [ { "type": "door" }, { "type": "door" } ] } ]
+}
+{% endschema %}

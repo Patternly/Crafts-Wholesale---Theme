@@ -1,0 +1,209 @@
+{%- capture cw_can -%}{%- render 'cw-can' -%}{%- endcapture -%}
+{%- liquid
+  assign v = product.selected_or_first_available_variant
+  assign units = product.metafields.custom.balls_per_pack.value | default: 1
+  assign mode = section.settings.mode
+  if mode == 'auto'
+    assign mode = 'kit'
+    if product.options.size == 1 and product.variants.size >= section.settings.grid_from
+      assign mode = 'grid'
+    endif
+  endif
+  if product.has_only_default_variant
+    assign mode = 'kit'
+  endif
+  assign col = collection | default: product.collections.first
+  assign opt = product.options_with_values.first
+-%}
+<div class="cw">
+<section class="cw-wrap">
+  <div class="cw-crumb"><a href="{{ routes.root_url }}">Home</a>{% if col %} / <a href="{{ col.url }}">{{ col.title | escape }}</a>{% endif %} / {{ product.title | escape }}</div>
+
+{%- if mode == 'grid' -%}
+  {%- comment -%} ===== every colour in one grid (yarns) ===== {%- endcomment -%}
+  <div class="cw-yhead">
+    <div class="cw-yhead__img">{%- if product.featured_image -%}{{ product.featured_image | image_url: width: 800 | image_tag: loading: 'eager', alt: product.featured_image.alt, sizes: '(min-width: 990px) 360px, 100vw' }}{%- endif -%}</div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="cw-kicker">{{ product.vendor | escape }}{% if product.type != blank %} · {{ product.type | escape }}{% endif %}</div>
+      <h1>{{ product.title | escape }}</h1>
+      <div class="cw-ystats">
+        {%- if cw_can == 'yes' -%}
+          <div><small>Trade per pack</small><b>{% if product.price_varies %}from {% endif %}{{ product.price_min | money }}</b><small>{% if units > 1 %}{% render 'cw-rrp', product: product, variant: v, part: 'unit' %} per ball, {% endif %}excl. VAT</small></div>
+          {%- capture rrp -%}{%- render 'cw-rrp', product: product, variant: v, part: 'rrp' -%}{%- endcapture -%}
+          {%- if rrp != blank -%}
+            <div><small>RRP</small><b>{{ rrp }}</b></div>
+            <div class="cw-prices__margin"><small>Your margin</small><b>{%- render 'cw-rrp', product: product, variant: v, part: 'margin' -%}</b></div>
+          {%- endif -%}
+        {%- endif -%}
+        <div><small>{{ opt.name | escape }}s</small><b>{{ product.variants.size }}</b>{% if units > 1 %}<small>{{ units }} balls per pack</small>{% endif %}</div>
+      </div>
+      {%- if cw_can == 'yes' -%}
+      <div class="cw-ytools">
+        <button type="button" class="cw-btn" data-cw-yeach>+1 of every {{ opt.name | downcase | escape }}</button>
+        <button type="button" class="cw-btn" data-cw-yclear>Clear</button>
+        <label class="cw-label-chk"><input type="checkbox" data-cw-ystock>In stock only</label>
+        <label class="cw-find">{%- render 'cw-icon', name: 'search', size: 16 -%}<input type="search" data-cw-yfind placeholder="Find {{ opt.name | downcase | escape }}" aria-label="Find {{ opt.name | downcase | escape }}"></label>
+      </div>
+      {%- else -%}
+        <div class="cw-acct"><span>Trade prices and ordering are for registered shops.</span><a class="cw-btn" href="{{ routes.account_login_url }}">Sign in</a><a class="cw-btn cw-btn--navy" href="{{ settings.cw_apply_url | default: '/pages/contact' }}">Apply</a></div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="cw-cgrid" data-cw-colours="#cw-ybar-{{ section.id }}" data-price="{{ product.price_min }}">
+    {%- for variant in product.variants -%}
+      {%- liquid
+        assign val = variant.option1
+        assign sw = nil
+        for ov in opt.values
+          if ov.name == val
+            assign sw = ov.swatch
+          endif
+        endfor
+        assign dot = ''
+        if variant.featured_image
+          assign dot = variant.featured_image | image_url: width: 80
+        elsif sw.image
+          assign dot = sw.image | image_url: width: 80
+        elsif sw.color
+          assign dot = sw.color
+        endif
+      -%}
+      <div class="cw-col" data-cw-col data-variant="{{ variant.id }}" data-price="{{ variant.price }}" data-name="{{ val | escape }} {{ variant.sku | escape }}" data-available="{{ variant.available }}" data-dot="{{ dot }}">
+        <div class="cw-col__sw"{% if sw.color and variant.featured_image == blank and sw.image == blank %} style="background:{{ sw.color }}"{% endif %}>
+          {%- if variant.featured_image -%}{{ variant.featured_image | image_url: width: 300 | image_tag: loading: 'lazy', alt: val }}{%- elsif sw.image -%}{{ sw.image | image_url: width: 300 | image_tag: loading: 'lazy', alt: val }}{%- elsif sw.color == blank -%}{{ val | escape | truncate: 8, '' }}{%- endif -%}
+        </div>
+        <div class="cw-col__top"><b title="{{ val | escape }}">{{ val | escape }}</b>{%- render 'cw-stock', variant: variant, product: product -%}</div>
+        {%- if cw_can == 'yes' -%}
+          {%- if product.price_varies -%}<div class="cw-small">{{ variant.price | money }}</div>{%- endif -%}
+          <div class="cw-step" data-cw-step><button type="button" data-d="-1" aria-label="Less {{ val | escape }}">−</button><input type="number" min="0" value="0" inputmode="numeric" aria-label="Packs of {{ val | escape }}"{% unless variant.available %} disabled{% endunless %}><button type="button" data-d="1" aria-label="More {{ val | escape }}"{% unless variant.available %} disabled{% endunless %}>+</button></div>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+  {%- if product.description != blank -%}
+    <details class="cw-fold" style="margin-bottom:24px"><summary>About {{ product.title | escape }}</summary><div class="rte">{{ product.description }}</div></details>
+  {%- endif -%}
+</section>
+  {%- if cw_can == 'yes' -%}
+  <div class="cw-bar" id="cw-ybar-{{ section.id }}">
+    <div class="cw-wrap">
+      <div class="cw-bar__info" style="flex-direction:row;align-items:center;gap:18px">
+        <div class="cw-bar__dots" data-cw-ydots></div>
+        <b data-cw-ysum>0 packs</b>
+      </div>
+      <button type="button" class="cw-btn cw-btn--white cw-btn--lg" data-cw-yadd disabled>Add all to basket</button>
+    </div>
+  </div>
+  {%- endif -%}
+
+{%- else -%}
+  {%- comment -%} ===== one product (kits, hoops, accessories) ===== {%- endcomment -%}
+  <div class="cw-pdp">
+    <div class="cw-gal">
+      <div class="cw-gal__stage">{%- if product.featured_media -%}{{ product.featured_media | image_url: width: 1200 | image_tag: loading: 'eager', alt: product.title, sizes: '(min-width: 990px) 640px, 100vw' }}{%- endif -%}</div>
+      {%- if product.media.size > 1 -%}
+        <div class="cw-gal__thumbs">
+          {%- for m in product.media limit: 12 -%}
+            {%- if m.media_type == 'image' -%}<button type="button" data-cw-thumb="{{ m | image_url: width: 1200 }}"{% if forloop.first %} class="is-on"{% endif %} aria-label="Photo {{ forloop.index }}">{{ m | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}</button>{%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="cw-buy" data-cw-item data-variant="{{ v.id }}" data-price="{{ v.price }}">
+      <div class="cw-kicker">{{ product.vendor | escape }}{% if product.type != blank %} · {{ product.type | escape }}{% endif %}</div>
+      <h1>{{ product.title | escape }}</h1>
+      <div class="cw-ids">
+        <span>SKU <b data-cw-vsku>{{ v.sku | default: '—' | escape }}</b></span>
+        {%- if v.barcode != blank -%}<span>Barcode <b>{{ v.barcode | escape }}</b></span>{%- endif -%}
+        <span data-cw-vstock style="background:none;padding:0">{%- render 'cw-stock', variant: v, product: product, style: 'tag', show_qty: true -%}</span>
+      </div>
+
+      {%- if cw_can == 'yes' -%}
+        <div class="cw-prices">
+          <div><small>Trade price</small><b data-cw-vprice>{{ v.price | money }}</b><small>excl. VAT{% if units > 1 %} · {% render 'cw-rrp', product: product, variant: v, part: 'unit' %} each{% endif %}</small></div>
+          {%- capture rrp -%}{%- render 'cw-rrp', product: product, variant: v, part: 'rrp' -%}{%- endcapture -%}
+          {%- if rrp != blank -%}
+            <div class="cw-prices__rrp"><small>RRP</small><b>{{ rrp }}</b><small>incl. VAT</small></div>
+            <div class="cw-prices__margin"><small>Your margin</small><b>{%- render 'cw-rrp', product: product, variant: v, part: 'margin' -%}</b><small>{%- render 'cw-rrp', product: product, variant: v, part: 'profit' -%} per {% if units > 1 %}ball{% else %}item{% endif %}</small></div>
+          {%- endif -%}
+        </div>
+
+        {%- unless product.has_only_default_variant -%}
+          <label class="cw-variant">{{ product.options | join: ' / ' | escape }}
+            <select data-cw-variant-select>
+              {%- for variant in product.variants -%}
+                {%- capture st -%}{%- render 'cw-stock', variant: variant, product: product, style: 'tag', show_qty: true -%}{%- endcapture -%}
+                <option value="{{ variant.id }}" data-price="{{ variant.price }}" data-price-text="{{ variant.price | money | escape }}" data-sku="{{ variant.sku | escape }}" data-available="{{ variant.available }}" data-stock="{{ st | strip | escape }}"{% if variant.id == v.id %} selected{% endif %}>{{ variant.title | escape }}{% unless variant.available %} (out of stock){% endunless %}</option>
+              {%- endfor -%}
+            </select>
+          </label>
+        {%- endunless -%}
+
+        <div class="cw-addrow">
+          <div class="cw-step cw-step--lg" data-cw-step><button type="button" data-d="-1" aria-label="Less">−</button><input type="number" min="1" value="{{ section.settings.default_qty }}" inputmode="numeric" aria-label="Quantity" data-cw-qty><button type="button" data-d="1" aria-label="More">+</button></div>
+          <button type="button" class="cw-btn cw-btn--navy cw-btn--lg" data-cw-add{% unless v.available %} disabled{% endunless %}>Add to basket · <span data-cw-line>{{ v.price | times: section.settings.default_qty | money }}</span></button>
+        </div>
+        {%- if section.settings.quick != blank -%}
+          <div class="cw-quick">
+            {%- assign qs = section.settings.quick | split: ',' -%}
+            {%- for q in qs -%}<button type="button" class="cw-btn cw-btn--sm" data-cw-setqty="{{ q | strip }}">{{ q | strip }}</button>{%- endfor -%}
+            <span class="cw-small">Quick quantities</span>
+          </div>
+        {%- endif -%}
+      {%- else -%}
+        <div class="cw-acct" style="padding:18px"><span style="flex:1 1 200px">Trade prices and ordering are for registered shops.</span><a class="cw-btn" href="{{ routes.account_login_url }}">Sign in</a><a class="cw-btn cw-btn--navy" href="{{ settings.cw_apply_url | default: '/pages/contact' }}">Apply</a></div>
+      {%- endif -%}
+
+      <div class="cw-kfacts" data-cw-facts="#cw-desc-{{ section.id }}" hidden>
+        <div class="cw-kfact" data-cw-fact="Stitches|Number of stitches|Stitch count"><b></b><span>stitches</span></div>
+        <div class="cw-kfact" data-cw-fact="Colou?rs|Number of colou?rs|Threads"><b></b><span>colours</span></div>
+        <div class="cw-kfact" data-cw-fact="Finished size|Size|Design size"><b></b><span>finished size</span></div>
+        <div class="cw-kfact" data-cw-fact="Fabric|Canvas"><b></b><span>fabric</span></div>
+      </div>
+
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when '@app' -%}{% render block %}
+          {%- when 'liquid' -%}<div {{ block.shopify_attributes }}>{{ block.settings.liquid }}</div>
+        {%- endcase -%}
+      {%- endfor -%}
+
+      {%- if product.description != blank -%}
+        <details class="cw-fold" open><summary>Description</summary><div class="rte" id="cw-desc-{{ section.id }}">{{ product.description }}</div></details>
+      {%- endif -%}
+      {%- if cw_can == 'yes' and product.images.size > 0 -%}
+        <details class="cw-fold"><summary>For your shop</summary>
+          <div class="cw-fold__btns">
+            {%- for img in product.images limit: 12 -%}<a class="cw-btn cw-btn--sm" href="{{ img | image_url }}" target="_blank" rel="noopener" download>{%- render 'cw-icon', name: 'download', size: 16 -%}Photo {{ forloop.index }}</a>{%- endfor -%}
+          </div>
+          <p class="cw-small" style="margin:10px 0 0">Full-size product photos for your own website and listings.</p>
+        </details>
+      {%- endif -%}
+      <details class="cw-fold"><summary>Delivery and minimum order</summary><p style="margin:10px 0 0" class="cw-muted">Minimum order {{ settings.cw_min_order | times: 100 | money_without_trailing_zeros }} + VAT. {{ settings.cw_dispatch }}. {{ settings.cw_delivery }}.</p></details>
+    </div>
+  </div>
+</section>
+{%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "CW product",
+  "settings": [
+    { "type": "select", "id": "mode", "label": "Layout", "default": "auto", "options": [
+      { "value": "auto", "label": "Automatic (many colours → colour grid)" },
+      { "value": "kit", "label": "One product with a buy box" },
+      { "value": "grid", "label": "Every variant in one grid" }
+    ] },
+    { "type": "range", "id": "grid_from", "label": "Colour grid from this many variants", "min": 4, "max": 30, "step": 1, "default": 8 },
+    { "type": "range", "id": "default_qty", "label": "Starting quantity", "min": 1, "max": 12, "step": 1, "default": 1 },
+    { "type": "text", "id": "quick", "label": "Quick quantity buttons", "default": "3, 6, 12" }
+  ],
+  "blocks": [
+    { "type": "@app" },
+    { "type": "liquid", "name": "Custom liquid", "settings": [ { "type": "liquid", "id": "liquid", "label": "Liquid" } ] }
+  ]
+}
+{% endschema %}

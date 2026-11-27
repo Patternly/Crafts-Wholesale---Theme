@@ -1,0 +1,30 @@
+{%- capture cw_can -%}{%- render 'cw-can' -%}{%- endcapture -%}
+{%- assign col = section.settings.collection -%}
+<div class="cw"><section class="cw-wrap cw-sec">
+  <div class="cw-sechead">
+    <h2 class="cw-h2">{{ section.settings.title | default: col.title | escape }}</h2>
+    {%- if col -%}<a href="{{ col.url }}">{{ section.settings.link_text | escape }} →</a>{%- endif -%}
+  </div>
+  <div class="cw-rail">
+    {%- if col -%}
+      {%- for p in col.products limit: section.settings.count -%}
+        {%- render 'cw-card', product: p, can: cw_can, show_vendor: section.settings.show_vendor -%}
+      {%- endfor -%}
+    {%- else -%}
+      {%- for i in (1..5) -%}<div class="cw-card"><div class="cw-card__img"></div><div class="cw-card__body"><div class="cw-card__title">Product</div></div></div>{%- endfor -%}
+    {%- endif -%}
+  </div>
+</section></div>
+{% schema %}
+{
+  "name": "CW product row",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "text", "id": "title", "label": "Title (empty = collection name)" },
+    { "type": "text", "id": "link_text", "label": "Link text", "default": "See all" },
+    { "type": "range", "id": "count", "label": "Products", "min": 4, "max": 20, "step": 1, "default": 10 },
+    { "type": "checkbox", "id": "show_vendor", "label": "Show brand", "default": true }
+  ],
+  "presets": [ { "name": "CW product row" } ]
+}
+{% endschema %}

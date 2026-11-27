@@ -1,0 +1,18 @@
+{%- comment -%} Used by quick order: /search?q=<SKU>&options[fields]=variants.sku&type=product&section_id=cw-sku. Prints the variants found as JSON. {%- endcomment -%}
+{%- capture cw_can -%}{%- render 'cw-can' -%}{%- endcapture -%}
+<script type="application/json" data-cw-sku>[
+{%- if cw_can == 'yes' -%}
+  {%- assign first = true -%}
+  {%- for r in search.results limit: 10 -%}
+    {%- if r.object_type == 'product' -%}
+      {%- for v in r.variants -%}
+        {%- unless first -%},{%- endunless -%}{%- assign first = false -%}
+        {"id":{{ v.id }},"sku":{{ v.sku | json }},"title":{{ r.title | json }},"variant":{{ v.title | json }},"price":{{ v.price }},"available":{{ v.available }}}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+]</script>
+{% schema %}
+{ "name": "CW SKU lookup" }
+{% endschema %}

@@ -1,0 +1,31 @@
+{%- comment -%}
+  RRP and margin from the product metafields the hub writes (custom.rrp_per_ball = retail price of ONE unit incl. VAT,
+  custom.balls_per_pack = units in this pack, default 1). Trade price is taken as excl. VAT.
+  render 'cw-rrp', product: p, variant: v, part: 'rrp' | 'margin' | 'profit' | 'unit'
+  Prints nothing when the product has no RRP.
+{%- endcomment -%}
+{%- liquid
+  assign rrp = product.metafields.custom.rrp_per_ball.value
+  if rrp != blank
+  assign units = product.metafields.custom.balls_per_pack.value | default: 1
+  assign trade_unit = variant.price | divided_by: 100.0 | divided_by: units
+  assign rrp_ex = rrp | divided_by: 1.2
+  case part
+    when 'rrp'
+      assign c = rrp | times: 100 | round
+      echo c | money
+      if units > 1
+        echo ' <span class="cw-small">/ ball</span>'
+      endif
+    when 'unit'
+      assign c = trade_unit | times: 100 | round
+      echo c | money
+    when 'profit'
+      assign c = rrp_ex | minus: trade_unit | times: 100 | round
+      echo c | money
+    else
+      assign m = rrp_ex | minus: trade_unit | divided_by: rrp_ex | times: 100 | round
+      echo m | append: '%'
+  endcase
+  endif
+-%}

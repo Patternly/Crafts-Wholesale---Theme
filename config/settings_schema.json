@@ -1451,5 +1451,73 @@
         "default": "scheme-1"
       }
     ]
+  },
+  {
+    "name": "Crafts Wholesale look",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Trade prices"
+      },
+      {
+        "type": "select",
+        "id": "cw_price_rule",
+        "label": "Who sees prices and can order",
+        "default": "signed_in",
+        "options": [
+          {
+            "value": "everyone",
+            "label": "Everyone"
+          },
+          {
+            "value": "signed_in",
+            "label": "Signed-in customers"
+          },
+          {
+            "value": "tagged",
+            "label": "Customers with the trade tag"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "cw_trade_tag",
+        "label": "Trade tag",
+        "default": "Customer"
+      },
+      {
+        "type": "number",
+        "id": "cw_min_order",
+        "label": "Minimum order (store currency, excl. VAT)",
+        "default": 80
+      },
+      {
+        "type": "text",
+        "id": "cw_apply_url",
+        "label": "Apply for trade link",
+        "default": "/pages/contact"
+      },
+      {
+        "type": "text",
+        "id": "cw_price_list_url",
+        "label": "Price list link (CSV)"
+      },
+      {
+        "type": "header",
+        "content": "Delivery promise"
+      },
+      {
+        "type": "text",
+        "id": "cw_dispatch",
+        "label": "Dispatch time",
+        "default": "Dispatched in 1–2 working days"
+      },
+      {
+        "type": "text",
+        "id": "cw_delivery",
+        "label": "Delivery times",
+        "default": "UK 2–3 days, Europe and USA 7 days"
+      }
+    ]
   }
 ]

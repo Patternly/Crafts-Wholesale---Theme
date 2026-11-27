@@ -1,0 +1,44 @@
+{%- comment -%}
+  Stock line for a variant. render 'cw-stock', variant: v, product: p, style: 'text' | 'tag'
+  Arriving soon: variant metafields custom.arriving_qty / custom.arriving_date (written by the hub from open purchase orders),
+  else Shopify's own incoming stock (variant.incoming / variant.next_incoming_date).
+{%- endcomment -%}
+{%- liquid
+  assign q = variant.inventory_quantity
+  assign tracked = false
+  if variant.inventory_management == 'shopify'
+    assign tracked = true
+  endif
+  assign soon_qty = variant.metafields.custom.arriving_qty.value | default: 0
+  assign soon_date = variant.metafields.custom.arriving_date.value
+  if soon_qty == 0 and variant.incoming
+    assign soon_qty = 1
+    assign soon_date = variant.next_incoming_date
+  endif
+  assign kind = 'ok'
+  if tracked and q <= 0
+    if soon_qty > 0
+      assign kind = 'soon'
+    else
+      assign kind = 'out'
+    endif
+  elsif tracked and q < 5
+    assign kind = 'low'
+  endif
+  if variant.available == false and kind != 'soon'
+    assign kind = 'out'
+  endif
+-%}
+{%- capture label -%}
+  {%- case kind -%}
+    {%- when 'soon' -%}Arriving soon{%- if soon_date %} · est. {{ soon_date | date: '%-d %b' }}{%- endif -%}
+    {%- when 'out' -%}Out of stock
+    {%- when 'low' -%}{{ q }} left
+    {%- else -%}{%- if tracked and show_qty -%}{{ q }} in stock{%- else -%}In stock{%- endif -%}
+  {%- endcase -%}
+{%- endcapture -%}
+{%- if style == 'tag' -%}
+  <span class="cw-tag cw-tag--{% if kind == 'low' %}ok{% else %}{{ kind }}{% endif %}">{{ label }}</span>
+{%- else -%}
+  <span class="cw-stock cw-stock--{{ kind }}">{{ label }}</span>
+{%- endif -%}

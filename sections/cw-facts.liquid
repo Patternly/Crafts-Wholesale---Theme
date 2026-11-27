@@ -1,0 +1,19 @@
+<div class="cw"><section class="cw-wrap cw-sec{% if section.settings.last %} cw-sec--last{% endif %}">
+  <div class="cw-facts">
+    {%- for block in section.blocks -%}
+      <div class="cw-fact{% if forloop.first %} cw-fact--navy{% endif %}" {{ block.shopify_attributes }}><b>{{ block.settings.number | escape }}</b><span>{{ block.settings.label | escape }}</span></div>
+    {%- endfor -%}
+  </div>
+</section></div>
+{% schema %}
+{
+  "name": "CW trade facts",
+  "max_blocks": 4,
+  "settings": [ { "type": "checkbox", "id": "last", "label": "Extra space below", "default": true } ],
+  "blocks": [ { "type": "fact", "name": "Fact", "settings": [
+    { "type": "text", "id": "number", "label": "Big text", "default": "£80" },
+    { "type": "text", "id": "label", "label": "Small text", "default": "minimum order + VAT" }
+  ] } ],
+  "presets": [ { "name": "CW trade facts", "blocks": [ { "type": "fact" }, { "type": "fact" }, { "type": "fact" }, { "type": "fact" } ] } ]
+}
+{% endschema %}

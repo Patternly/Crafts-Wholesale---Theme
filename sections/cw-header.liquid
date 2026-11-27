@@ -1,0 +1,123 @@
+{%- capture cw_can -%}{%- render 'cw-can' -%}{%- endcapture -%}
+{%- assign menu = linklists[section.settings.menu] -%}
+<script>
+  window.CW = Object.assign(window.CW || {}, {
+    money: {{ shop.money_format | json }},
+    min: {{ settings.cw_min_order | default: 0 | times: 100 | round | json }},
+    can: {% if cw_can == 'yes' %}true{% else %}false{% endif %}
+  });
+</script>
+<div class="cw">
+  {%- if section.settings.show_topbar -%}
+  <div class="cw-topbar">
+    <div class="cw-wrap">
+      <div class="cw-topbar__facts">
+        {%- for block in section.blocks -%}
+          <span {{ block.shopify_attributes }}{% if forloop.index > 2 %} class="cw-hide-m"{% endif %}>{{ block.settings.text }}</span>
+        {%- endfor -%}
+      </div>
+      {%- if customer -%}
+        <a href="{{ routes.account_url }}">My account</a>
+      {%- else -%}
+        <a href="{{ settings.cw_apply_url | default: '/pages/contact' }}">Apply for a trade account</a>
+      {%- endif -%}
+    </div>
+  </div>
+  {%- endif -%}
+
+  <header class="cw-header{% if section.settings.sticky %} is-sticky{% endif %}">
+    <div class="cw-wrap cw-header__row">
+      <button type="button" class="cw-iconbtn" data-cw-menu aria-label="Menu" aria-controls="cw-drawer">{%- render 'cw-icon', name: 'menu', size: 22 -%}</button>
+      <a href="{{ routes.root_url }}" class="cw-logo">
+        {%- if section.settings.logo != blank -%}
+          {{ section.settings.logo | image_url: width: 400 | image_tag: alt: shop.name, width: section.settings.logo_width }}
+        {%- else -%}
+          <span class="cw-logo__name">{{ shop.name | escape }}</span>
+          {%- if section.settings.tagline != blank -%}<span class="cw-logo__sub">{{ section.settings.tagline | escape }}</span>{%- endif -%}
+        {%- endif -%}
+      </a>
+      <form action="{{ routes.search_url }}" method="get" role="search" class="cw-search">
+        {%- render 'cw-icon', name: 'search', size: 18 -%}
+        <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search by name, SKU or barcode" aria-label="Search">
+        <input type="hidden" name="options[prefix]" value="last">
+        <input type="hidden" name="type" value="product">
+      </form>
+      <div class="cw-header__acts">
+        {%- if cw_can == 'yes' and section.settings.quick_order_url != blank -%}
+          <a href="{{ section.settings.quick_order_url }}" class="cw-btn cw-hide-m">{%- render 'cw-icon', name: 'list' -%}Quick order</a>
+        {%- endif -%}
+        {%- if customer -%}
+          <a href="{{ routes.account_url }}" class="cw-btn" aria-label="My account">{%- render 'cw-icon', name: 'user' -%}<span class="cw-hide-m">{{ customer.default_address.company | default: customer.first_name | default: 'Account' | escape | truncate: 22 }}</span></a>
+        {%- else -%}
+          <a href="{{ routes.account_login_url }}" class="cw-btn" aria-label="Sign in">{%- render 'cw-icon', name: 'user' -%}<span class="cw-hide-m">Sign in</span></a>
+        {%- endif -%}
+        <a href="{{ routes.cart_url }}" class="cw-btn cw-btn--navy" id="cart-icon-bubble">{%- render 'cw-icon', name: 'bag' -%}<span data-cw-cart-total data-empty="Basket">{% if cart.item_count > 0 %}{{ cart.total_price | money }}{% else %}Basket{% endif %}</span></a>
+      </div>
+    </div>
+    {%- if menu.links.size > 0 -%}
+    <nav class="cw-wrap cw-nav" aria-label="Main">
+      {%- for link in menu.links -%}
+        <div class="cw-nav__item">
+          {%- if link.links.size > 0 -%}
+            <a href="{{ link.url }}" class="cw-nav__link">{{ link.title | escape }}{%- render 'cw-icon', name: 'down', size: 14 -%}</a>
+            {%- assign mega = false -%}
+            {%- for c in link.links -%}{%- if c.links.size > 0 -%}{%- assign mega = true -%}{%- endif -%}{%- endfor -%}
+            <div class="cw-nav__drop{% if mega %} cw-nav__drop--mega{% endif %}">
+              {%- for c in link.links -%}
+                {%- if c.links.size > 0 -%}
+                  <div class="cw-nav__col"><b>{{ c.title | escape }}</b>{%- for g in c.links -%}<a href="{{ g.url }}">{{ g.title | escape }}</a>{%- endfor -%}<a href="{{ c.url }}" style="font-weight:600">All {{ c.title | escape }} →</a></div>
+                {%- else -%}
+                  <a href="{{ c.url }}">{{ c.title | escape }}</a>
+                {%- endif -%}
+              {%- endfor -%}
+              {%- unless mega -%}<a href="{{ link.url }}" style="font-weight:600">All {{ link.title | escape }} →</a>{%- endunless -%}
+            </div>
+          {%- else -%}
+            <a href="{{ link.url }}" class="cw-nav__link{% if link.title contains 'New' %} cw-nav__link--hi{% endif %}">{{ link.title | escape }}</a>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </nav>
+    {%- endif -%}
+  </header>
+
+  <div class="cw-drawer" id="cw-drawer">
+    <div class="cw-drawer__bg" data-cw-menu-close></div>
+    <div class="cw-drawer__panel" role="dialog" aria-label="Menu">
+      <button type="button" class="cw-iconbtn" data-cw-menu-close aria-label="Close menu" style="align-self:flex-end">{%- render 'cw-icon', name: 'close', size: 22 -%}</button>
+      {%- for link in menu.links -%}
+        {%- if link.links.size > 0 -%}
+          <details><summary>{{ link.title | escape }}{%- render 'cw-icon', name: 'down', size: 16 -%}</summary>
+            {%- for c in link.links -%}<a href="{{ c.url }}">{{ c.title | escape }}</a>{%- for g in c.links -%}<a href="{{ g.url }}" style="padding-left:34px">{{ g.title | escape }}</a>{%- endfor -%}{%- endfor -%}
+            <a href="{{ link.url }}">All {{ link.title | escape }}</a>
+          </details>
+        {%- else -%}
+          <a href="{{ link.url }}">{{ link.title | escape }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if cw_can == 'yes' and section.settings.quick_order_url != blank -%}<a href="{{ section.settings.quick_order_url }}">Quick order</a>{%- endif -%}
+      {%- if customer -%}<a href="{{ routes.account_url }}">My account</a>{%- else -%}<a href="{{ routes.account_login_url }}">Sign in</a><a href="{{ settings.cw_apply_url | default: '/pages/contact' }}">Apply for a trade account</a>{%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "CW header",
+  "class": "cw-header-section",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo (empty = shop name)" },
+    { "type": "range", "id": "logo_width", "label": "Logo width", "min": 80, "max": 300, "step": 10, "unit": "px", "default": 190 },
+    { "type": "text", "id": "tagline", "label": "Line under the name", "default": "Kits · Yarns · Supplies" },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "url", "id": "quick_order_url", "label": "Quick order page", "default": "/cart" },
+    { "type": "checkbox", "id": "sticky", "label": "Stick to the top", "default": true },
+    { "type": "checkbox", "id": "show_topbar", "label": "Show the dark top bar", "default": true }
+  ],
+  "blocks": [
+    { "type": "fact", "name": "Top bar fact", "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "Trade only" } ] }
+  ],
+  "presets": [ { "name": "CW header" } ]
+}
+{% endschema %}

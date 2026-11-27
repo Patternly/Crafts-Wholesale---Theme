@@ -1,0 +1,122 @@
+{%- capture cw_can -%}{%- render 'cw-can' -%}{%- endcapture -%}
+<div class="cw">
+  <section class="cw-wrap">
+    <div class="cw-crumb"><a href="{{ routes.root_url }}">Home</a> / {{ collection.title | escape }}</div>
+    <div class="cw-colhead">
+      <h1>{{ collection.title | escape }}</h1>
+      <div class="cw-colhead__tools">
+        {%- if collection.products_count > 0 -%}<span class="cw-muted">{{ collection.products_count }} product{% if collection.products_count != 1 %}s{% endif %}</span>{%- endif -%}
+        <div class="cw-seg" role="group" aria-label="View">
+          <button type="button" data-cw-view="list" class="is-on">List</button>
+          <button type="button" data-cw-view="grid">Grid</button>
+        </div>
+        
+        <label class="cw-sort">Sort
+          <select data-cw-sort aria-label="Sort">
+            {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+            {%- for o in collection.sort_options -%}<option value="{{ o.value }}"{% if o.value == sort_by %} selected{% endif %}>{{ o.name | escape }}</option>{%- endfor -%}
+          </select>
+        </label>
+        
+      </div>
+    </div>
+    {%- assign chips = linklists[section.settings.chips] -%}
+    {%- if chips.links.size > 0 -%}
+      <div class="cw-chips">
+        {%- for l in chips.links -%}<a href="{{ l.url }}" class="cw-btn cw-pill{% if l.active or l.current %} is-on{% endif %}">{{ l.title | escape }}</a>{%- endfor -%}
+      </div>
+    {%- endif -%}
+    {%- if collection.description != blank and section.settings.show_description -%}<div class="rte cw-muted" style="margin-top:12px;max-width:820px">{{ collection.description }}</div>{%- endif -%}
+  </section>
+
+  {%- paginate collection.products by section.settings.per_page -%}
+  <section class="cw-wrap cw-colbody">
+    {%- if collection.filters.size > 0 -%}
+    <aside class="cw-side is-closed">
+      <button type="button" class="cw-btn" data-cw-side-toggle aria-expanded="false" style="display:none" id="cw-side-btn">Filters</button>
+      <div class="cw-side__body" style="display:flex;flex-direction:column;gap:18px">
+        {%- for filter in collection.filters -%}
+          {%- case filter.type -%}
+            {%- when 'boolean', 'list' -%}
+              <div>
+                <h3>{{ filter.label | escape }}</h3>
+                {%- for v in filter.values -%}
+                  {%- if forloop.index == 9 -%}<details><summary class="cw-small" style="cursor:pointer;padding:6px 0">Show {{ filter.values.size | minus: 8 }} more</summary>{%- endif -%}
+                  <a class="cw-chk{% if v.active %} is-on{% endif %}{% if v.count == 0 and v.active == false %} is-off{% endif %}" href="{% if v.active %}{{ v.url_to_remove }}{% else %}{{ v.url_to_add }}{% endif %}" rel="nofollow"><i></i>{{ v.label | escape }}<small>{{ v.count }}</small></a>
+                  {%- if forloop.last and forloop.index > 8 -%}</details>{%- endif -%}
+                {%- endfor -%}
+              </div>
+            {%- when 'price_range' -%}
+              <form>
+                <h3>{{ filter.label | escape }}</h3>
+                {%- for f in collection.filters -%}{%- for v in f.active_values -%}{%- unless f.type == 'price_range' -%}<input type="hidden" name="{{ v.param_name }}" value="{{ v.value }}">{%- endunless -%}{%- endfor -%}{%- endfor -%}
+                {%- if collection.sort_by -%}<input type="hidden" name="sort_by" value="{{ collection.sort_by }}">{%- endif -%}
+                <div style="display:flex;gap:8px;align-items:center">
+                  <input class="cw-field" style="width:90px;min-height:40px;border:1px solid var(--cw-field);border-radius:6px;padding:0 8px;font:inherit" type="number" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}" placeholder="0" aria-label="From">
+                  <span>to</span>
+                  <input class="cw-field" style="width:90px;min-height:40px;border:1px solid var(--cw-field);border-radius:6px;padding:0 8px;font:inherit" type="number" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}" placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}" aria-label="To">
+                  <button class="cw-btn cw-btn--sm">Go</button>
+                </div>
+              </form>
+          {%- endcase -%}
+        {%- endfor -%}
+        {%- assign any_active = false -%}
+        {%- for f in collection.filters -%}{%- if f.active_values.size > 0 or f.min_value.value or f.max_value.value -%}{%- assign any_active = true -%}{%- endif -%}{%- endfor -%}
+        {%- if any_active -%}<a class="cw-btn cw-btn--sm" href="{{ collection.url }}{% if collection.sort_by %}?sort_by={{ collection.sort_by }}{% endif %}">Clear filters</a>{%- endif -%}
+      </div>
+    </aside>
+    {%- endif -%}
+
+    <div class="cw-main" data-cw-main>
+      {%- if collection.products.size == 0 -%}
+        <div class="cw-empty"><h2 class="cw-h2">Nothing here yet</h2><p class="cw-muted">Try fewer filters or another search.</p></div>
+      {%- else -%}
+        <div class="cw-list">
+          <div class="cw-row cw-row--head"><span></span><span class="cw-th">Product</span><span class="cw-th cw-c-col">Stock</span><span class="cw-th cw-c-col cw-c-rrp">RRP</span><span class="cw-th cw-c-col cw-c-margin">Margin</span><span class="cw-th">{% if cw_can == 'yes' %}Trade price{% endif %}</span><span class="cw-th">{% if cw_can == 'yes' %}Quantity{% endif %}</span></div>
+          {%- for p in collection.products -%}
+            {%- render 'cw-row', product: p, can: cw_can -%}
+          {%- endfor -%}
+        </div>
+        <div class="cw-grid">
+          {%- for p in collection.products -%}
+            {%- render 'cw-card', product: p, can: cw_can -%}
+          {%- endfor -%}
+        </div>
+        {%- if paginate.pages > 1 -%}
+          <nav class="cw-pages" aria-label="Pages">
+            {%- if paginate.previous -%}<a class="cw-btn" href="{{ paginate.previous.url }}">← Previous</a>{%- endif -%}
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}<a class="cw-btn" href="{{ part.url }}">{{ part.title }}</a>{%- elsif part.title == paginate.current_page -%}<span class="cw-btn" aria-current="page">{{ part.title }}</span>{%- else -%}<span class="cw-muted" style="align-self:center">…</span>{%- endif -%}
+            {%- endfor -%}
+            {%- if paginate.next -%}<a class="cw-btn" href="{{ paginate.next.url }}">Next →</a>{%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </section>
+  {%- endpaginate -%}
+
+  {%- if cw_can == 'yes' -%}
+  <div class="cw-bar" data-cw-bar>
+    <div class="cw-wrap">
+      <div class="cw-bar__info">
+        <div class="cw-bar__line"><b data-cw-bar-total>{{ cart.item_count }} items · {{ cart.total_price | money }}</b><span data-cw-bar-min></span></div>
+        <div class="cw-bar__track"><i data-cw-bar-fill></i></div>
+      </div>
+      <a href="{{ routes.cart_url }}" class="cw-btn cw-btn--white">View basket</a>
+    </div>
+  </div>
+  {%- endif -%}
+</div>
+<style>@media (max-width:900px){#cw-side-btn{display:inline-flex !important}}</style>
+
+{% schema %}
+{
+  "name": "CW order list",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 12, "max": 48, "step": 4, "default": 24 },
+    { "type": "link_list", "id": "chips", "label": "Quick links under the title (menu)" },
+    { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": false }
+  ]
+}
+{% endschema %}

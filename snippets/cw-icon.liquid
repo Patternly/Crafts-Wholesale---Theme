@@ -1,0 +1,24 @@
+{%- comment -%} Line icons for the Crafts Wholesale look. render 'cw-icon', name: 'search', size: 18 {%- endcomment -%}
+{%- assign s = size | default: 18 -%}
+<svg width="{{ s }}" height="{{ s }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="{{ stroke | default: 2 }}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+{%- case name -%}
+  {%- when 'search' -%}<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>
+  {%- when 'list' -%}<path d="M4 6h16M4 12h16M4 18h10"/>
+  {%- when 'user' -%}<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>
+  {%- when 'bag' -%}<path d="M5 7h14l-1.5 13h-11z"/><path d="M9 7a3 3 0 0 1 6 0"/>
+  {%- when 'menu' -%}<path d="M4 7h16M4 12h16M4 17h16"/>
+  {%- when 'close' -%}<path d="M6 6l12 12M18 6L6 18"/>
+  {%- when 'down' -%}<path d="M6 9l6 6 6-6"/>
+  {%- when 'reorder' -%}<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>
+  {%- when 'download' -%}<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>
+  {%- when 'doc' -%}<path d="M6 3h9l3 3v15H6z"/><path d="M9 11h6M9 15h6"/>
+  {%- when 'trash' -%}<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>
+  {%- when 'hoop' -%}<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="6"/><path d="M12 2v2"/>
+  {%- when 'fabric' -%}<path d="M4 4h16v16H4z"/><path d="M4 9h16M4 14h16M9 4v16M14 4v16"/>
+  {%- when 'yarn' -%}<circle cx="12" cy="12" r="8"/><path d="M6 8c4 0 8 3 10 9M9 4.6c3 2 5 6 5 11M4.5 13c3-1 7 0 10 4"/>
+  {%- when 'kit' -%}<path d="M4 7h16v13H4z"/><path d="M4 7l3-3h10l3 3M9 11h6"/>
+  {%- when 'truck' -%}<path d="M3 6h11v10H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>
+  {%- when 'lock' -%}<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+  {%- else -%}<circle cx="12" cy="12" r="8"/>
+{%- endcase -%}
+</svg>
