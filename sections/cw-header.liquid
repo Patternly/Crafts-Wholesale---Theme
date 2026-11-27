@@ -12,8 +12,12 @@
   <div class="cw-topbar">
     <div class="cw-wrap">
       <div class="cw-topbar__facts">
+        {%- assign nf = 0 -%}
         {%- for block in section.blocks -%}
-          <span {{ block.shopify_attributes }}{% if forloop.index > 2 %} class="cw-hide-m"{% endif %}>{{ block.settings.text }}</span>
+          {%- if block.type == 'fact' -%}
+            {%- assign nf = nf | plus: 1 -%}
+            <span {{ block.shopify_attributes }}{% if nf > 2 %} class="cw-hide-m"{% endif %}>{{ block.settings.text }}</span>
+          {%- endif -%}
         {%- endfor -%}
       </div>
       {%- if customer -%}
@@ -124,15 +128,33 @@
                 {%- for c in link.links -%}
                   {%- liquid
                     assign img = blank
-                    if c.type == 'collection_link'
-                      assign img = c.object.featured_image
-                    elsif c.type == 'product_link'
+                    assign logo = blank
+                    assign logo_src = blank
+                    assign ch = c.title | handle
+                    for b in section.blocks
+                      if b.type == 'brand'
+                        assign bh = b.settings.name | handle
+                        if bh == ch and b.settings.logo != blank
+                          assign logo = b.settings.logo
+                        endif
+                      endif
+                    endfor
+                    if logo == blank
+                      assign bundled = section.settings.logo_assets | remove: ' ' | split: ','
+                      if bundled contains ch
+                        assign logo_src = 'cw-brand-' | append: ch | append: '.png' | asset_url
+                      endif
+                    endif
+                    if c.type == 'collection_link' or c.type == 'product_link'
                       assign img = c.object.featured_image
                     endif
                   -%}
                   <a class="cw-menu__tile" href="{{ c.url }}">
-                    <span class="cw-menu__pic">
-                      {%- if img != blank -%}{{ img | image_url: width: 300 | image_tag: loading: 'lazy', alt: '', width: 150, height: 150 }}{%- else -%}<span class="cw-menu__ini">{{ c.title | slice: 0 | upcase }}</span>{%- endif -%}
+                    <span class="cw-menu__pic{% if logo != blank or logo_src != blank %} cw-menu__pic--logo{% endif %}">
+                      {%- if logo != blank -%}{{ logo | image_url: width: 400 | image_tag: loading: 'lazy', alt: c.title }}
+                      {%- elsif logo_src != blank -%}<img src="{{ logo_src }}" alt="{{ c.title | escape }}" loading="lazy">
+                      {%- elsif img != blank -%}{{ img | image_url: width: 300 | image_tag: loading: 'lazy', alt: '', width: 150, height: 150 }}
+                      {%- else -%}<span class="cw-menu__ini">{{ c.title | slice: 0 | upcase }}</span>{%- endif -%}
                     </span>
                     <span class="cw-menu__name">{{ c.title | escape }}</span>
                   </a>
@@ -158,7 +180,7 @@
 {
   "name": "CW header",
   "class": "cw-header-section",
-  "max_blocks": 4,
+  "max_blocks": 40,
   "settings": [
     { "type": "image_picker", "id": "logo", "label": "Logo (empty = shop name)" },
     { "type": "range", "id": "logo_width", "label": "Logo width", "min": 80, "max": 300, "step": 10, "unit": "px", "default": 190 },
@@ -166,10 +188,15 @@
     { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
     { "type": "text", "id": "quick_order_url", "label": "Quick order link", "default": "/cart#quick-order" },
     { "type": "checkbox", "id": "sticky", "label": "Stick to the top", "default": true },
-    { "type": "checkbox", "id": "show_topbar", "label": "Show the dark top bar", "default": true }
+    { "type": "checkbox", "id": "show_topbar", "label": "Show the dark top bar", "default": true },
+    { "type": "text", "id": "logo_assets", "label": "Built-in brand logos", "info": "Brands whose logo ships with the theme, by handle", "default": "luca-s,luca-s-yarns,hobbyjobby" }
   ],
   "blocks": [
-    { "type": "fact", "name": "Top bar fact", "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "Trade only" } ] }
+    { "type": "fact", "name": "Top bar fact", "limit": 4, "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "Trade only" } ] },
+    { "type": "brand", "name": "Brand logo", "settings": [
+      { "type": "text", "id": "name", "label": "Brand name, as in the menu", "default": "Addi" },
+      { "type": "image_picker", "id": "logo", "label": "Logo" }
+    ] }
   ],
   "presets": [ { "name": "CW header" } ]
 }

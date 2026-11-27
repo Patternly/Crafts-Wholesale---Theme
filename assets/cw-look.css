@@ -94,6 +94,8 @@ body{background:var(--cw-bg)}
 .cw-menu__pic{display:block;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--cw-bg);border:1px solid var(--cw-line2)}
 .cw-menu__pic img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s}
 .cw-menu__tile:hover img{transform:scale(1.04)}
+.cw-menu__pic--logo{background:#fff;display:flex;align-items:center;justify-content:center;padding:18px}
+.cw-menu__pic--logo img{width:100%;height:100%;object-fit:contain}
 .cw-menu__ini{display:flex;width:100%;height:100%;align-items:center;justify-content:center;font-family:var(--cw-serif);font-size:4.4rem;color:var(--cw-teal)}
 .cw-menu__name{font-weight:500;font-size:1.5rem;line-height:1.3}
 .cw-menu__tile:hover .cw-menu__name{color:var(--cw-teal)}
