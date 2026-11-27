@@ -35,8 +35,9 @@
     <div class="cw-wrap cw-header__row">
       <button type="button" class="cw-iconbtn" data-cw-menu aria-label="Menu" aria-controls="cw-drawer">{%- render 'cw-icon', name: 'menu', size: 22 -%}</button>
       <a href="{{ routes.root_url }}" class="cw-logo">
-        {%- if section.settings.logo != blank -%}
-          {{ section.settings.logo | image_url: width: 400 | image_tag: alt: shop.name, width: section.settings.logo_width }}
+        {%- assign cw_logo = section.settings.logo | default: settings.logo -%}
+        {%- if cw_logo != blank -%}
+          {{ cw_logo | image_url: width: 600 | image_tag: alt: shop.name, width: section.settings.logo_width, class: 'cw-logo__img' }}
         {%- else -%}
           <span class="cw-logo__name">{{ shop.name | escape }}</span>
           {%- if section.settings.tagline != blank -%}<span class="cw-logo__sub">{{ section.settings.tagline | escape }}</span>{%- endif -%}
@@ -76,7 +77,7 @@
     <div class="cw-menu" role="dialog" aria-modal="true" aria-label="Menu">
       <div class="cw-menu__list">
         <div class="cw-menu__top">
-          <a href="{{ routes.root_url }}" class="cw-logo__name" style="font-size:2.4rem;text-decoration:none">{{ shop.name | escape }}</a>
+          <a href="{{ routes.root_url }}" class="cw-logo" style="text-decoration:none">{%- if cw_logo != blank -%}{{ cw_logo | image_url: width: 400 | image_tag: alt: shop.name, width: 150, class: 'cw-logo__img' }}{%- else -%}<span class="cw-logo__name" style="font-size:2.4rem">{{ shop.name | escape }}</span>{%- endif -%}</a>
           <button type="button" class="cw-iconbtn cw-menu__x" data-cw-menu-close aria-label="Close menu">{%- render 'cw-icon', name: 'close', size: 22 -%}</button>
         </div>
         <nav class="cw-menu__links" aria-label="All pages">
@@ -184,7 +185,7 @@
   "class": "cw-header-section",
   "max_blocks": 40,
   "settings": [
-    { "type": "image_picker", "id": "logo", "label": "Logo (empty = shop name)" },
+    { "type": "image_picker", "id": "logo", "label": "Logo (empty = the theme logo, then the shop name)" },
     { "type": "range", "id": "logo_width", "label": "Logo width", "min": 80, "max": 300, "step": 10, "unit": "px", "default": 190 },
     { "type": "text", "id": "tagline", "label": "Line under the name", "default": "Kits · Yarns · Supplies" },
     { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
