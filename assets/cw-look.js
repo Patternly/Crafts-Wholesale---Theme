@@ -226,7 +226,12 @@
   });
   document.addEventListener('click', function (e) {
     var t = e.target.closest('[data-cw-side-toggle]');
-    if (t) { var s = t.closest('.cw-side'); s.classList.toggle('is-closed'); t.setAttribute('aria-expanded', !s.classList.contains('is-closed')); }
+    if (t) {
+      var s = document.querySelector('.cw-side'); if (!s) return;
+      var open = s.classList.toggle('is-closed') === false;
+      document.querySelectorAll('[data-cw-side-toggle][aria-expanded]').forEach(function (b) { b.setAttribute('aria-expanded', open); });
+      document.documentElement.classList.toggle('cw-sheet-open', open && window.matchMedia('(max-width:900px)').matches);
+    }
   });
 
   /* ---------- side menu ---------- */

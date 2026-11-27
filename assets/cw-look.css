@@ -1,5 +1,7 @@
 /* Crafts Wholesale look (Idea 1 "Trade catalogue"), on top of Trade 16.2.0. Everything is scoped under .cw. */
 :root{--cw-navy:#0B1B33;--cw-ink:#1F2430;--cw-muted:#5B6270;--cw-bg:#F4F2EE;--cw-line:#E2DED6;--cw-line2:#EEEAE3;--cw-field:#C9C4BA;--cw-teal:#00747C;--cw-teal-soft:#E6F3F4;--cw-teal-ink:#00585E;--cw-ok:#1F6B3A;--cw-low:#9A5B00;--cw-out:#A1262A;--cw-soon:#2E4A7D;--cw-serif:'Amiri',Georgia,serif;--cw-sans:'Jost',system-ui,sans-serif}
+/* Trade base.css hides every empty div; our grids need empty cells to keep their columns */
+.cw-row>div:empty,.cw-cline>div:empty,.cw-ystats>div:empty{display:block}
 body{background:var(--cw-bg)}
 .cw{font-family:var(--cw-sans);color:var(--cw-ink);-webkit-font-smoothing:antialiased;font-size:1.6rem;line-height:1.45;letter-spacing:0}
 .cw *,.cw *::before,.cw *::after{box-sizing:border-box}
@@ -145,8 +147,15 @@ body{background:var(--cw-bg)}
 .cw-colhead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:8px}
 .cw-colhead h1{font-size:5.2rem;line-height:1}
 .cw-colhead__tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.cw-seg{display:inline-flex;border:1px solid var(--cw-navy);border-radius:6px;overflow:hidden}
-.cw-seg button{border:0;min-height:44px;padding:0 16px;font:inherit;font-weight:600;cursor:pointer;background:#fff;color:var(--cw-navy)}
+.cw-colhead__count{margin-top:8px;font-size:1.4rem}
+.cw-tool{position:relative;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:1px solid var(--cw-line);border-radius:999px;background:#fff;font:inherit;font-weight:600;font-size:1.4rem;color:var(--cw-navy);cursor:pointer;white-space:nowrap;box-shadow:0 1px 2px rgba(11,27,51,.06);transition:border-color .15s}
+.cw-tool:hover,.cw-tool:focus-within{border-color:var(--cw-navy)}
+.cw-tool--filter{display:none}
+.cw-tool--sort select{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer;font-size:16px}
+.cw-tool--sort span{max-width:16ch;overflow:hidden;text-overflow:ellipsis}
+.cw-tool__n{font-style:normal;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--cw-teal);color:#fff;font-size:1.2rem;display:inline-flex;align-items:center;justify-content:center}
+.cw-seg{display:inline-flex;padding:3px;gap:2px;border:1px solid var(--cw-line);border-radius:999px;background:#fff;box-shadow:0 1px 2px rgba(11,27,51,.06)}
+.cw-seg button{display:inline-flex;align-items:center;gap:6px;border:0;min-height:36px;padding:0 14px;border-radius:999px;font:inherit;font-weight:600;font-size:1.4rem;cursor:pointer;background:transparent;color:var(--cw-navy)}
 .cw-seg button.is-on{background:var(--cw-navy);color:#fff}
 .cw-sort{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--cw-navy);border-radius:6px;min-height:46px;padding:0 6px 0 14px;background:#fff;font-weight:600;color:var(--cw-navy)}
 .cw-sort select{border:0;font:inherit;background:transparent;color:var(--cw-navy);min-height:42px;cursor:pointer}
@@ -162,6 +171,7 @@ body{background:var(--cw-bg)}
 .cw-chk small{color:var(--cw-muted);margin-left:auto}
 .cw-chk.is-off{opacity:.45;pointer-events:none}
 .cw-side__body{display:flex;flex-direction:column;gap:18px}
+.cw-side__head,.cw-side__bg{display:none}
 .cw-side__btn{display:none}
 .cw-side__more{display:none}
 .cw-side details[open] .cw-side__more{display:block}
@@ -302,10 +312,14 @@ body{background:var(--cw-bg)}
 }
 @media (max-width:900px){
  .cw{font-size:1.5rem}
- .cw-wrap{padding:0 16px}
+ .cw-wrap{padding-left:16px;padding-right:16px}
  .cw-hide-m{display:none !important}
  .cw-iconbtn{display:inline-flex}
- .cw-header__row{flex-wrap:wrap;min-height:64px;gap:10px}
+ .cw-header__row{flex-wrap:wrap;min-height:64px;gap:10px;padding-top:10px;padding-bottom:12px}
+ .cw-logo{flex:1 1 0;min-width:0}
+ .cw-logo__name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .cw-header__acts{gap:8px}
+ .cw-header__acts .cw-btn{min-height:44px;padding:0 12px}
  .cw-logo__name{font-size:2.4rem}
  .cw-logo__sub{display:none}
  .cw-search{order:5;flex:1 1 100%;min-height:44px}
@@ -331,12 +345,36 @@ body{background:var(--cw-bg)}
  .cw-acct__acts{grid-template-columns:repeat(2,minmax(0,1fr))}
  .cw-h2{font-size:3rem}
  .cw-colhead h1{font-size:3.6rem}
- .cw-side{flex:1 1 100%}
- .cw-side__btn{display:flex;width:100%;justify-content:flex-start}
- .cw-side__chev{margin-left:auto;display:inline-flex;transition:transform .2s}
- .cw-side:not(.is-closed) .cw-side__chev{transform:rotate(180deg)}
- .cw-side.is-closed{background:transparent;padding:0}
- .cw-side.is-closed .cw-side__body{display:none}
+ .cw-colhead{align-items:flex-start}
+ .cw-colhead>div:first-child{flex:1 1 100%}
+ .cw-colhead__tools{flex:1 1 100%;flex-wrap:nowrap;gap:8px}
+ .cw-tool{padding:0 14px;min-width:0}
+ .cw-tool--filter{display:inline-flex;flex:none}
+ .cw-tool--sort{flex:1 1 auto}
+ .cw-tool--sort span{max-width:none;flex:1}
+ .cw-seg{margin-left:auto;flex:none}
+ .cw-seg button{padding:0 10px}
+ .cw-seg button span{display:none}
+ .cw-colbody{padding-top:14px}
+ .cw-side{position:fixed;left:0;right:0;bottom:0;z-index:66;max-height:85vh;overflow-y:auto;border-radius:16px 16px 0 0;padding:0 18px 24px;box-shadow:0 -10px 40px rgba(11,27,51,.25);animation:cwUp .2s ease-out}
+ @keyframes cwUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+ .cw-side.is-closed{display:none}
+ .cw-side__head{display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;padding:14px 0;margin-bottom:4px;border-bottom:1px solid var(--cw-line2);z-index:1;font-size:1.7rem}
+ .cw-side__bg{position:fixed;inset:0;z-index:65;background:rgba(11,27,51,.45)}
+ .cw-side.is-closed~*.cw-side__bg,.cw-side__bg{display:none}
+ .cw-sheet-open .cw-side__bg{display:block}
+ .cw-sheet-open,.cw-sheet-open body{overflow:hidden}
+ .cw-main--m2 .cw-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .cw-main--m2 .cw-card__body{padding:10px;gap:4px}
+ .cw-main--m2 .cw-card__title{font-size:1.4rem;min-height:0}
+ .cw-main--m2 .cw-card__meta{font-size:1.2rem}
+ .cw-main--m2 .cw-card__price b{font-size:1.7rem}
+ .cw-main--m2 .cw-card__buy{flex-wrap:wrap;gap:6px}
+ .cw-main--m2 .cw-card__buy .cw-step{flex:1 1 100%}
+ .cw-main--m2 .cw-card__buy .cw-step input{flex:1;width:auto;min-width:0}
+ .cw-main--m2 .cw-card__buy .cw-btn{flex:1 1 100%;font-size:1.4rem}
+ .cw-main--m2 .cw-card__img .cw-tag{left:6px;top:6px;font-size:1.1rem;padding:3px 7px}
+ .cw-main--m1 .cw-grid{grid-template-columns:minmax(0,1fr)}
  .cw-row{grid-template-columns:64px minmax(0,1fr);row-gap:8px}
  .cw-row--head{display:none}
  .cw-row .cw-c-col{display:none}

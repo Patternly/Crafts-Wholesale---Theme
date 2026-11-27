@@ -2,22 +2,43 @@
 <div class="cw">
   <section class="cw-wrap">
     <div class="cw-crumb"><a href="{{ routes.root_url }}">Home</a> / {{ collection.title | escape }}</div>
+    {%- liquid
+      assign n_active = 0
+      for f in collection.filters
+        if f.type == 'price_range'
+          if f.min_value.value or f.max_value.value
+            assign n_active = n_active | plus: 1
+          endif
+        else
+          assign n_active = n_active | plus: f.active_values.size
+        endif
+      endfor
+      assign sort_by = collection.sort_by | default: collection.default_sort_by
+      assign sort_name = ''
+      for o in collection.sort_options
+        if o.value == sort_by
+          assign sort_name = o.name
+        endif
+      endfor
+    -%}
     <div class="cw-colhead">
-      <h1>{{ collection.title | escape }}</h1>
+      <div>
+        <h1>{{ collection.title | escape }}</h1>
+        {%- if collection.products_count > 0 -%}<div class="cw-muted cw-colhead__count">{{ collection.products_count }} product{% if collection.products_count != 1 %}s{% endif %}</div>{%- endif -%}
+      </div>
       <div class="cw-colhead__tools">
-        {%- if collection.products_count > 0 -%}<span class="cw-muted">{{ collection.products_count }} product{% if collection.products_count != 1 %}s{% endif %}</span>{%- endif -%}
-        <div class="cw-seg" role="group" aria-label="View">
-          <button type="button" data-cw-view="list" class="is-on">List</button>
-          <button type="button" data-cw-view="grid">Grid</button>
-        </div>
-        
-        <label class="cw-sort">Sort
+        {%- if collection.filters.size > 0 -%}
+          <button type="button" class="cw-tool cw-tool--filter" data-cw-side-toggle aria-expanded="false" aria-controls="cw-side-body">{%- render 'cw-icon', name: 'filter', size: 18 -%}<span>Filter</span>{% if n_active > 0 %}<i class="cw-tool__n">{{ n_active }}</i>{% endif %}</button>
+        {%- endif -%}
+        <label class="cw-tool cw-tool--sort">{%- render 'cw-icon', name: 'sort', size: 18 -%}<span>{{ sort_name | default: 'Sort' | escape }}</span>
           <select data-cw-sort aria-label="Sort">
-            {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
             {%- for o in collection.sort_options -%}<option value="{{ o.value }}"{% if o.value == sort_by %} selected{% endif %}>{{ o.name | escape }}</option>{%- endfor -%}
           </select>
         </label>
-        
+        <div class="cw-seg" role="group" aria-label="View">
+          <button type="button" data-cw-view="list" class="is-on" aria-label="List view">{%- render 'cw-icon', name: 'list', size: 18 -%}<span>List</span></button>
+          <button type="button" data-cw-view="grid" aria-label="Grid view">{%- render 'cw-icon', name: 'grid', size: 18 -%}<span>Grid</span></button>
+        </div>
       </div>
     </div>
     {%- assign chips = linklists[section.settings.chips] -%}
@@ -32,20 +53,9 @@
   {%- paginate collection.products by section.settings.per_page -%}
   <section class="cw-wrap cw-colbody">
     {%- if collection.filters.size > 0 -%}
-    {%- liquid
-      assign n_active = 0
-      for f in collection.filters
-        if f.type == 'price_range'
-          if f.min_value.value or f.max_value.value
-            assign n_active = n_active | plus: 1
-          endif
-        else
-          assign n_active = n_active | plus: f.active_values.size
-        endif
-      endfor
-    -%}
-    <aside class="cw-side is-closed">
-      <button type="button" class="cw-btn cw-side__btn" data-cw-side-toggle aria-expanded="false" aria-controls="cw-side-body">{%- render 'cw-icon', name: 'list', size: 18 -%}<span>Filters{% if n_active > 0 %} ({{ n_active }}){% endif %}</span><span class="cw-side__chev">{%- render 'cw-icon', name: 'down', size: 16 -%}</span></button>
+    <div class="cw-side__bg" data-cw-side-toggle></div>
+    <aside class="cw-side is-closed" aria-label="Filters">
+      <div class="cw-side__head"><b>Filters{% if n_active > 0 %} ({{ n_active }}){% endif %}</b><button type="button" class="cw-iconbtn" data-cw-side-toggle aria-label="Close filters">{%- render 'cw-icon', name: 'close', size: 20 -%}</button></div>
       <div class="cw-side__body" id="cw-side-body">
         {%- for filter in collection.filters -%}
           {%- case filter.type -%}
@@ -79,7 +89,7 @@
     </aside>
     {%- endif -%}
 
-    <div class="cw-main" data-cw-main>
+    <div class="cw-main cw-main--m{{ section.settings.mobile_columns | default: '2' }}" data-cw-main>
       {%- if collection.products.size == 0 -%}
         <div class="cw-empty"><h2 class="cw-h2">Nothing here yet</h2><p class="cw-muted">Try fewer filters or another search.</p></div>
       {%- else -%}
@@ -128,7 +138,8 @@
   "settings": [
     { "type": "range", "id": "per_page", "label": "Products per page", "min": 12, "max": 48, "step": 4, "default": 24 },
     { "type": "link_list", "id": "chips", "label": "Quick links under the title (menu)" },
-    { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": false }
+    { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": false },
+    { "type": "select", "id": "mobile_columns", "label": "Products per row on phones (grid view)", "options": [ { "value": "1", "label": "1" }, { "value": "2", "label": "2" } ], "default": "2" }
   ]
 }
 {% endschema %}
