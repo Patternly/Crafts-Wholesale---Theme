@@ -99,11 +99,11 @@
             {%- render 'cw-row', product: p, can: cw_can -%}
           {%- endfor -%}
         </div>
-        <div class="cw-grid">
+        <template data-cw-grid-tpl><div class="cw-grid">
           {%- for p in collection.products -%}
             {%- render 'cw-card', product: p, can: cw_can -%}
           {%- endfor -%}
-        </div>
+        </div></template>
         {%- if paginate.pages > 1 -%}
           <nav class="cw-pages" aria-label="Pages">
             {%- if paginate.previous -%}<a class="cw-btn" href="{{ paginate.previous.url }}">← Previous</a>{%- endif -%}

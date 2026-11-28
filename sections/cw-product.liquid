@@ -22,7 +22,7 @@
 {%- if mode == 'grid' -%}
   {%- comment -%} ===== every colour in one grid (yarns) ===== {%- endcomment -%}
   <div class="cw-yhead">
-    <div class="cw-yhead__img">{%- if product.featured_image -%}{{ product.featured_image | image_url: width: 800 | image_tag: loading: 'eager', alt: product.featured_image.alt, sizes: '(min-width: 990px) 360px, 100vw' }}{%- endif -%}</div>
+    <div class="cw-yhead__img">{%- if product.featured_image -%}{{ product.featured_image | image_url: width: 800 | image_tag: loading: 'eager', fetchpriority: 'high', alt: product.featured_image.alt, sizes: '(min-width: 990px) 360px, 100vw' }}{%- endif -%}</div>
     <div style="display:flex;flex-direction:column;gap:16px">
       <div class="cw-kicker">{{ product.vendor | escape }}{% if product.type != blank %} · {{ product.type | escape }}{% endif %}</div>
       <h1>{{ product.title | escape }}</h1>
@@ -111,7 +111,7 @@
   {%- comment -%} ===== one product (kits, hoops, accessories) ===== {%- endcomment -%}
   <div class="cw-pdp">
     <div class="cw-gal">
-      <div class="cw-gal__stage">{%- if product.featured_media -%}{{ product.featured_media | image_url: width: 1200 | image_tag: loading: 'eager', alt: product.title, sizes: '(min-width: 990px) 640px, 100vw' }}{%- endif -%}</div>
+      <div class="cw-gal__stage">{%- if product.featured_media -%}{{ product.featured_media | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', alt: product.title, sizes: '(min-width: 990px) 640px, 100vw' }}{%- endif -%}</div>
       {%- if product.media.size > 1 -%}
         <div class="cw-gal__thumbs">
           {%- for m in product.media limit: 12 -%}

@@ -280,10 +280,21 @@
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
     {%- comment -%} Crafts Wholesale look {%- endcomment -%}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Jost:wght@400;500;600;700&display=swap">
+    {%- liquid
+      assign cwf = settings.cw_font_body
+      assign cwf6 = cwf | font_modify: 'weight', '600'
+      assign cwf7 = cwf | font_modify: 'weight', '700'
+    -%}
+    {%- if cwf -%}<link rel="preload" as="font" href="{{ cwf | font_url }}" type="font/woff2" crossorigin>{%- endif -%}
     {{ 'cw-look.css' | asset_url | stylesheet_tag }}
+    {%- if cwf -%}
+    {% style %}
+      {{ cwf | font_face: font_display: 'swap' }}
+      {{ cwf6 | font_face: font_display: 'swap' }}
+      {{ cwf7 | font_face: font_display: 'swap' }}
+      :root{--cw-sans:{{ cwf.family }},{{ cwf.fallback_families }};--cw-serif:{{ settings.type_header_font.family }},{{ settings.type_header_font.fallback_families }}}
+    {% endstyle %}
+    {%- endif -%}
     <script src="{{ 'cw-look.js' | asset_url }}" defer="defer"></script>
     <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
 

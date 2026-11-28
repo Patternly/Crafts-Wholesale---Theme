@@ -6,7 +6,8 @@
     sym: {{ cart.currency.symbol | json }},
     min: {{ settings.cw_min_order | default: 0 | times: 100 | round | json }},
     free: {{ settings.cw_free_ship | default: 0 | times: 100 | round | json }},
-    can: {% if cw_can == 'yes' %}true{% else %}false{% endif %}
+    can: {% if cw_can == 'yes' %}true{% else %}false{% endif %},
+    cart: { item_count: {{ cart.item_count }}, total_price: {{ cart.total_price }} }
   });
 </script>
 <div class="cw">

@@ -1460,6 +1460,13 @@
         "content": "Trade prices"
       },
       {
+        "type": "font_picker",
+        "id": "cw_font_body",
+        "label": "Text font",
+        "default": "jost_n4",
+        "info": "Headings use the theme's heading font (Typography)."
+      },
+      {
         "type": "select",
         "id": "cw_price_rule",
         "label": "Who sees prices and can order",

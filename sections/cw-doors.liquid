@@ -4,7 +4,8 @@
       {%- assign col = block.settings.collection -%}
       <a href="{{ block.settings.link | default: col.url | default: '#' }}" class="cw-door" {{ block.shopify_attributes }}>
         {%- assign img = block.settings.image | default: col.featured_image -%}
-        {%- if img -%}{{ img | image_url: width: 1400 | image_tag: loading: 'eager', alt: block.settings.title, sizes: '(min-width: 990px) 640px, 100vw' }}{%- endif -%}
+        {%- assign prio = 'auto' -%}{%- if forloop.first -%}{%- assign prio = 'high' -%}{%- endif -%}
+        {%- if img -%}{{ img | image_url: width: 1400 | image_tag: loading: 'eager', fetchpriority: prio, alt: block.settings.title, sizes: '(min-width: 990px) 640px, 100vw' }}{%- endif -%}
         <span class="cw-door__box">
           <span><span class="cw-door__title">{{ block.settings.title | default: col.title | escape }}</span>{%- if block.settings.text != blank -%}<span class="cw-muted" style="display:block;margin-top:6px">{{ block.settings.text | escape }}</span>{%- endif -%}</span>
           <span class="cw-btn cw-btn--navy">{{ block.settings.button | escape }}</span>
