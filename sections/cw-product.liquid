@@ -9,8 +9,34 @@
       assign mode = 'grid'
     endif
   endif
+  if section.settings.mode == 'auto' and product.options.size == 1 and product.variants.size > 1
+    assign o1 = product.options.first | downcase
+    assign f1 = product.variants.first.option1 | downcase | replace: ' ', ''
+    assign f1x = f1 | split: 'x'
+    if o1 contains 'size' or o1 contains 'dimension' or o1 contains 'format'
+      assign mode = 'sizes'
+    elsif f1x.size == 2
+      assign f1a = f1x.first | plus: 0
+      assign f1b = f1x.last | plus: 0
+      if f1a > 0 and f1b > 0
+        assign mode = 'sizes'
+      endif
+    endif
+  endif
+  if section.settings.mode == 'sizes' and product.has_only_default_variant == false
+    assign mode = 'sizes'
+  endif
   if product.has_only_default_variant
     assign mode = 'kit'
+  endif
+  assign wall = section.settings.thread_collection
+  assign in_wall = false
+  if wall
+    for c in product.collections
+      if c.id == wall.id
+        assign in_wall = true
+      endif
+    endfor
   endif
   assign col = collection | default: product.collections.first
   assign opt = product.options_with_values.first
@@ -107,6 +133,68 @@
   </div>
   {%- endif -%}
 
+{%- elsif mode == 'sizes' -%}
+  {%- comment -%} ===== fabric and other products sold by size: one line per size, drawn to scale ===== {%- endcomment -%}
+  {%- liquid
+    assign maxd = 1
+    for variant in product.variants
+      assign d = variant.option1 | downcase | replace: ' ', '' | replace: 'cm', '' | replace: '×', 'x' | split: 'x'
+      if d.size == 2
+        assign a = d.first | plus: 0
+        assign b = d.last | plus: 0
+        if a > maxd
+          assign maxd = a
+        endif
+        if b > maxd
+          assign maxd = b
+        endif
+      endif
+    endfor
+  -%}
+  <div class="cw-yhead">
+    <div class="cw-yhead__img">{%- if product.featured_image -%}{{ product.featured_image | image_url: width: 800 | image_tag: loading: 'eager', fetchpriority: 'high', alt: product.featured_image.alt, sizes: '(min-width: 990px) 360px, 100vw' }}{%- endif -%}</div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="cw-kicker">{{ product.vendor | escape }}{% if product.type != blank %} · {{ product.type | escape }}{% endif %}</div>
+      <h1>{{ product.title | escape }}</h1>
+      {%- if product.description != blank -%}<details class="cw-fold cw-fold--top"><summary>About this {{ product.type | default: 'product' | downcase | escape }}</summary><div class="rte">{{ product.description }}</div></details>{%- endif -%}
+      {%- unless cw_can == 'yes' -%}
+        <div class="cw-acct"><span>Trade prices and ordering are for registered shops.</span><a class="cw-btn" href="{{ routes.account_login_url }}">Sign in</a><a class="cw-btn cw-btn--navy" href="{{ settings.cw_apply_url | default: '/pages/contact' }}">Apply</a></div>
+      {%- endunless -%}
+      <div class="lsw-sizes" data-cw-colours="#cw-ybar-{{ section.id }}" data-unit="piece" data-units="pieces" data-what="size" data-whats="sizes" data-price="{{ product.price_min }}">
+        <div class="lsw-sizes__head cw-small"><span>{{ opt.name | escape }}{% if maxd > 1 %} · drawn to scale{% endif %}</span></div>
+        {%- for variant in product.variants -%}
+          {%- liquid
+            assign d = variant.option1 | downcase | replace: ' ', '' | replace: 'cm', '' | replace: '×', 'x' | split: 'x'
+            assign w = 0
+            assign h = 0
+            if d.size == 2
+              assign h = d.first | plus: 0 | times: 76 | divided_by: maxd
+              assign w = d.last | plus: 0 | times: 76 | divided_by: maxd
+            endif
+          -%}
+          <div class="lsw-size" data-cw-col data-variant="{{ variant.id }}" data-price="{{ variant.price }}" data-name="{{ variant.title | escape }} {{ variant.sku | escape }}" data-available="{{ variant.available }}" data-dot="#E9E0D3">
+            <span class="lsw-size__pic">{%- if w > 0 -%}<i style="width:{{ w | at_least: 6 }}px;height:{{ h | at_least: 6 }}px"></i>{%- endif -%}</span>
+            <span class="lsw-size__name"><b>{{ variant.title | escape }}</b>{%- if variant.sku != blank -%}<small>{{ variant.sku | escape }}</small>{%- endif -%}</span>
+            <span>{%- render 'cw-stock', variant: variant, product: product -%}</span>
+            {%- if cw_can == 'yes' -%}
+              <b class="lsw-size__price">{{ variant.price | money }}</b>
+              <div class="cw-step" data-cw-step><button type="button" data-d="-1" aria-label="Less {{ variant.title | escape }}">−</button><input type="number" min="0" value="0" inputmode="numeric" aria-label="Pieces of {{ variant.title | escape }}"{% unless variant.available %} disabled{% endunless %}><button type="button" data-d="1" aria-label="More {{ variant.title | escape }}"{% unless variant.available %} disabled{% endunless %}>+</button></div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</section>
+  {%- if cw_can == 'yes' -%}
+  <div class="cw-bar" id="cw-ybar-{{ section.id }}">
+    <div class="cw-wrap">
+      <div class="cw-bar__info" style="flex-direction:row;align-items:center;gap:18px"><b data-cw-ysum>0 pieces</b><span class="cw-bar__dots" data-cw-ydots hidden></span></div>
+      <button type="button" class="cw-btn cw-btn--white cw-btn--lg" data-cw-yadd disabled>Add all to basket</button>
+    </div>
+  </div>
+  {%- endif -%}
+
 {%- else -%}
   {%- comment -%} ===== one product (kits, hoops, accessories) ===== {%- endcomment -%}
   <div class="cw-pdp">
@@ -130,6 +218,9 @@
         <span data-cw-vstock style="background:none;padding:0">{%- render 'cw-stock', variant: v, product: product, style: 'tag', show_qty: true -%}</span>
       </div>
 
+      {%- if in_wall -%}
+        <a class="lsw-walllink" href="{{ wall.url }}">{%- render 'cw-icon', name: 'list', size: 20 -%}<span><b>See every colour on one page</b><small>Type a quantity next to each colour and add them all at once</small></span></a>
+      {%- endif -%}
       {%- if cw_can == 'yes' -%}
         <div class="cw-prices">
           <div><small>Trade price</small><b data-cw-vprice>{{ v.price | money }}</b><small>excl. VAT{% if units > 1 %} · {% render 'cw-rrp', product: product, variant: v, part: 'unit' %} each{% endif %}</small></div>
@@ -174,6 +265,16 @@
         {%- endcase -%}
       {%- endfor -%}
 
+      {%- if product.description != blank and section.settings.kit_facts -%}
+        <div class="cw-kfacts lsw-kfacts" data-cw-facts="#cw-desc-{{ section.id }}" hidden>
+          <div class="cw-kfact" data-cw-fact="Size|Finished size|Dimensions"><b></b><span>finished size</span></div>
+          <div class="cw-kfact" data-cw-fact="Stitches|Stitch count"><b></b><span>stitches</span></div>
+          <div class="cw-kfact" data-cw-fact="Colors|Colours"><b></b><span>colours</span></div>
+          <div class="cw-kfact" data-cw-fact="Fabric|Canvas"><b></b><span>fabric</span></div>
+          <div class="cw-kfact" data-cw-fact="Skill Level|Skill|Difficulty"><b></b><span>skill level</span></div>
+          <div class="cw-kfact" data-cw-fact="Artist|Designer"><b></b><span>design</span></div>
+        </div>
+      {%- endif -%}
       {%- if product.description != blank -%}
         <details class="cw-fold" open><summary>Description</summary><div class="rte" id="cw-desc-{{ section.id }}">{{ product.description }}</div></details>
       {%- endif -%}
@@ -195,13 +296,16 @@
 
 {% schema %}
 {
-  "name": "CW product",
+  "name": "Product (wholesale)",
   "settings": [
     { "type": "select", "id": "mode", "label": "Layout", "default": "auto", "options": [
       { "value": "auto", "label": "Automatic (many colours → colour grid)" },
       { "value": "kit", "label": "One product with a buy box" },
-      { "value": "grid", "label": "Every variant in one grid" }
+      { "value": "grid", "label": "Every variant in one grid" },
+      { "value": "sizes", "label": "One line per size (fabric)" }
     ] },
+    { "type": "checkbox", "id": "kit_facts", "label": "Kits: fact tiles from the description (size, stitches, colours, fabric, skill)", "default": true },
+    { "type": "collection", "id": "thread_collection", "label": "Thread wall collection", "info": "Products in this collection link to it ('See every colour on one page'). Give the collection the template 'threads'." },
     { "type": "range", "id": "grid_from", "label": "Colour grid from this many variants", "min": 4, "max": 30, "step": 1, "default": 8 },
     { "type": "range", "id": "default_qty", "label": "Starting quantity", "min": 1, "max": 12, "step": 1, "default": 1 },
     { "type": "text", "id": "quick", "label": "Quick quantity buttons", "default": "3, 6, 12" }

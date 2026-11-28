@@ -5,7 +5,7 @@
     "cw_header": {
       "type": "cw-header",
       "settings": {
-        "tagline": "Kits · Yarns · Supplies",
+        "tagline": "Wholesale",
         "menu": "main-menu",
         "quick_order_url": "/cart#quick-order",
         "sticky": true,
@@ -16,19 +16,19 @@
         "f1": {
           "type": "fact",
           "settings": {
-            "text": "Trade only"
+            "text": "Trade store for registered shops"
           }
         },
         "f2": {
           "type": "fact",
           "settings": {
-            "text": "Minimum order £80 + VAT"
+            "text": "Prices in EUR, excl. VAT"
           }
         },
         "f3": {
           "type": "fact",
           "settings": {
-            "text": "Dispatched in 1–2 working days"
+            "text": "Minimum order €200"
           }
         }
       },

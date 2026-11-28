@@ -292,6 +292,9 @@
       {{ cwf | font_face: font_display: 'swap' }}
       {{ cwf6 | font_face: font_display: 'swap' }}
       {{ cwf7 | font_face: font_display: 'swap' }}
+      {%- assign cwh6 = settings.type_header_font | font_modify: 'weight', '600' -%}{%- assign cwh7 = settings.type_header_font | font_modify: 'weight', '700' -%}
+      {{ cwh6 | font_face: font_display: 'swap' }}
+      {{ cwh7 | font_face: font_display: 'swap' }}
       :root{--cw-sans:{{ cwf.family }},{{ cwf.fallback_families }};--cw-serif:{{ settings.type_header_font.family }},{{ settings.type_header_font.fallback_families }}}
     {% endstyle %}
     {%- endif -%}

@@ -1,0 +1,34 @@
+{%- assign col = section.settings.collection -%}
+<div class="cw"><section class="lsw-band">
+  <div class="cw-wrap lsw-band__in">
+    <div class="lsw-band__text">
+      {%- if section.settings.kicker != blank -%}<div class="cw-kicker">{{ section.settings.kicker | escape }}</div>{%- endif -%}
+      <h2>{{ section.settings.title | escape }}</h2>
+      {%- if section.settings.text != blank -%}<p>{{ section.settings.text | escape }}</p>{%- endif -%}
+      {%- if col and section.settings.button != blank -%}<a class="cw-btn cw-btn--white cw-btn--lg" href="{{ col.url }}">{{ section.settings.button | escape }}</a>{%- endif -%}
+    </div>
+    <div class="lsw-band__wall">
+      {%- if col -%}
+        {%- for p in col.products limit: 12 -%}
+          {%- assign num = p.title | split: ' - ' | last | split: ' /' | first | strip -%}
+          <a href="{{ p.url }}" class="lsw-band__sk">{%- if p.featured_image -%}{{ p.featured_image | image_url: width: 240 | image_tag: loading: 'lazy', alt: num }}{%- endif -%}<b>{{ num | escape }}</b></a>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..12) -%}<span class="lsw-band__sk"><span class="lsw-band__ph"></span><b>000</b></span>{%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section></div>
+{% schema %}
+{
+  "name": "Thread wall band",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Thread collection" },
+    { "type": "text", "id": "kicker", "label": "Small line above the title", "default": "Luca-S stranded cotton" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Every colour on one page." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Type how many boxes of 12 you need next to each colour number, then add them all in one go. Find a number, filter by colour family, or add one box of every colour to fill a stand." },
+    { "type": "text", "id": "button", "label": "Button", "default": "Open the thread wall" }
+  ],
+  "presets": [ { "name": "Thread wall band" } ]
+}
+{% endschema %}

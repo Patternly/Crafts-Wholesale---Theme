@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "threads": {
+      "type": "lsw-threads",
+      "settings": {
+        "kicker": "Every colour on one page",
+        "title": "",
+        "name_from": "number",
+        "price_label": "Trade per box of 12",
+        "sold_as": "12 skeins",
+        "fibre": "100% cotton",
+        "upsell_label": "Sell the whole range"
+      }
+    }
+  },
+  "order": ["threads"]
+}

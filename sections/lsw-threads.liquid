@@ -1,0 +1,104 @@
+{%- comment -%}
+  Luca-S Wholesale: thread wall. Every product of the collection is one colour (e.g. "Box of 12 Stranded Cotton Luca-S - 512"),
+  shown as a tile with a quantity box; the sticky bar adds them all at once. Colour families come from each colour's photo
+  (worked out in the browser), so no tags are needed. Pages of 250 colours; later pages are fetched by assets/cw-look.js.
+{%- endcomment -%}
+{%- capture cw_can -%}{%- render 'cw-can' -%}{%- endcapture -%}
+{%- paginate collection.products by 250 -%}
+{%- assign first = collection.products.first -%}
+<div class="cw">
+<section class="cw-wrap lsw-threads">
+  <div class="cw-crumb"><a href="{{ routes.root_url }}">Home</a> / {{ collection.title | escape }}</div>
+  <div class="lsw-thead">
+    <div class="lsw-thead__main">
+      {%- if section.settings.kicker != blank -%}<div class="cw-kicker">{{ section.settings.kicker | escape }}</div>{%- endif -%}
+      <h1>{{ section.settings.title | default: collection.title | escape }}</h1>
+      <div class="lsw-stats">
+        {%- if cw_can == 'yes' and first -%}<div><small>{{ section.settings.price_label | escape }}</small><b>{{ first.price | money }}</b><small>excl. VAT</small></div>{%- endif -%}
+        {%- if section.settings.sold_as != blank -%}<div><small>Sold as</small><b>{{ section.settings.sold_as | escape }}</b></div>{%- endif -%}
+        {%- if section.settings.fibre != blank -%}<div><small>Fibre</small><b>{{ section.settings.fibre | escape }}</b></div>{%- endif -%}
+        <div><small>Colours</small><b>{{ collection.products_count }}</b></div>
+      </div>
+    </div>
+    {%- assign up = section.settings.upsell -%}
+    {%- if up -%}
+      <a class="lsw-upsell" href="{{ up.url }}">
+        {%- if up.featured_image -%}{{ up.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}{%- endif -%}
+        <span><small>{{ section.settings.upsell_label | escape }}</small><b>{{ up.title | escape }}</b>{%- if cw_can == 'yes' -%}<span class="cw-small">{{ up.price | money }}</span>{%- endif -%}</span>
+      </a>
+    {%- endif -%}
+  </div>
+
+  {%- if cw_can == 'yes' -%}
+  <div class="lsw-ttools">
+    <div class="cw-ytools">
+      <label class="cw-find">{%- render 'cw-icon', name: 'search', size: 16 -%}<input type="search" data-cw-yfind placeholder="Find colour number" aria-label="Find colour number"></label>
+      <button type="button" class="cw-btn" data-cw-yeach>+1 box of every colour shown</button>
+      <button type="button" class="cw-btn" data-cw-yclear>Clear</button>
+      <label class="cw-label-chk"><input type="checkbox" data-cw-ystock>In stock only</label>
+      <span class="cw-small lsw-shown" data-cw-yshown></span>
+    </div>
+    <div class="lsw-fams" role="group" aria-label="Colour family">
+      <button type="button" class="lsw-fam is-on" data-cw-yfam="all" aria-pressed="true"><i style="background:conic-gradient(#C52A3C,#F2B53B,#5E8F3C,#1E4FA3,#4A2E7A,#C52A3C)"></i>All colours</button>
+      {%- assign fams = 'red:Reds:#B3263A,pink:Pinks:#E59AB0,orange:Oranges:#E07A2E,yellow:Yellows:#E9B634,green:Greens:#4F8A3B,blue:Blues:#2F5FA8,purple:Purples:#6B3FA0,brown:Browns:#7A5234,grey:Greys:#8C8C8C,black:Blacks:#222222,white:Whites:#F3EFE6' | split: ',' -%}
+      {%- for f in fams -%}{%- assign fp = f | split: ':' -%}<button type="button" class="lsw-fam" data-cw-yfam="{{ fp[0] }}" aria-pressed="false" hidden><i style="background:{{ fp[2] }}"></i>{{ fp[1] }}</button>{%- endfor -%}
+    </div>
+  </div>
+  {%- else -%}
+    <div class="cw-acct"><span>Trade prices and ordering are for registered shops.</span><a class="cw-btn" href="{{ routes.account_login_url }}">Sign in</a><a class="cw-btn cw-btn--navy" href="{{ settings.cw_apply_url | default: '/pages/contact' }}">Apply</a></div>
+  {%- endif -%}
+
+  <div class="cw-cgrid lsw-wall" data-cw-colours="#cw-ybar-{{ section.id }}" data-unit="box" data-units="boxes" data-price="{{ first.price }}"
+    data-cw-more="{{ collection.url }}" data-section="{{ section.id }}" data-pages="{{ paginate.pages }}">
+    {%- for p in collection.products -%}
+      {%- liquid
+        assign v = p.selected_or_first_available_variant
+        assign num = p.title | split: ' - ' | last | split: ' /' | first | strip
+        if section.settings.name_from == 'title'
+          assign num = p.title
+        endif
+      -%}
+      <div class="cw-col lsw-sk" data-cw-col data-fam-auto data-variant="{{ v.id }}" data-price="{{ v.price }}" data-name="{{ num | escape }} {{ v.sku | escape }} {{ p.title | escape }}" data-available="{{ v.available }}" data-dot="{% if p.featured_image %}{{ p.featured_image | image_url: width: 80 }}{% endif %}">
+        <a class="cw-col__sw" href="{{ p.url }}" tabindex="-1">{%- if p.featured_image -%}{{ p.featured_image | image_url: width: 300 | image_tag: loading: 'lazy', alt: num }}{%- else -%}{{ num | escape | truncate: 8, '' }}{%- endif -%}</a>
+        <div class="cw-col__top"><b title="{{ p.title | escape }}">{{ num | escape }}</b>{%- render 'cw-stock', variant: v, product: p -%}</div>
+        {%- if cw_can == 'yes' -%}
+          <div class="cw-step" data-cw-step><button type="button" data-d="-1" aria-label="Less {{ num | escape }}">−</button><input type="number" min="0" value="0" inputmode="numeric" aria-label="Boxes of {{ num | escape }}"{% unless v.available %} disabled{% endunless %}><button type="button" data-d="1" aria-label="More {{ num | escape }}"{% unless v.available %} disabled{% endunless %}>+</button></div>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+  <p class="cw-small" data-cw-more-status hidden></p>
+</section>
+{%- if cw_can == 'yes' -%}
+  <div class="cw-bar" id="cw-ybar-{{ section.id }}">
+    <div class="cw-wrap">
+      <div class="cw-bar__info" style="flex-direction:row;align-items:center;gap:18px">
+        <div class="cw-bar__dots" data-cw-ydots></div>
+        <b data-cw-ysum>0 boxes</b>
+      </div>
+      <button type="button" class="cw-btn cw-btn--white cw-btn--lg" data-cw-yadd disabled>Add all to basket</button>
+    </div>
+  </div>
+{%- endif -%}
+</div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Thread wall",
+  "settings": [
+    { "type": "paragraph", "content": "Every product in this collection shows as one colour with a quantity box. Use it for collections like Luca-S stranded cotton, where each colour is its own product." },
+    { "type": "text", "id": "kicker", "label": "Small line above the title", "default": "Every colour on one page" },
+    { "type": "text", "id": "title", "label": "Title (empty = collection name)" },
+    { "type": "select", "id": "name_from", "label": "Name under each colour", "default": "number", "options": [
+      { "value": "number", "label": "Colour number (text after the last ' - ' in the title)" },
+      { "value": "title", "label": "Whole product title" }
+    ] },
+    { "type": "text", "id": "price_label", "label": "Price label", "default": "Trade per box of 12" },
+    { "type": "text", "id": "sold_as", "label": "Sold as", "default": "12 skeins" },
+    { "type": "text", "id": "fibre", "label": "Fibre", "default": "100% cotton" },
+    { "type": "product", "id": "upsell", "label": "Product to suggest (e.g. an organiser box)" },
+    { "type": "text", "id": "upsell_label", "label": "Line above that product", "default": "Sell the whole range" }
+  ]
+}
+{% endschema %}

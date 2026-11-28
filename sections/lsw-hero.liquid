@@ -1,0 +1,46 @@
+{%- capture cw_can -%}{%- render 'cw-can' -%}{%- endcapture -%}
+{%- assign fp = section.settings.product -%}
+{%- assign img = section.settings.image | default: fp.featured_image -%}
+<div class="cw"><section class="cw-wrap lsw-hero">
+  <div class="lsw-hero__text">
+    {%- if section.settings.kicker != blank -%}<div class="cw-kicker">{{ section.settings.kicker | escape }}</div>{%- endif -%}
+    <h1>{{ section.settings.title | escape }}</h1>
+    {%- if section.settings.text != blank -%}<p>{{ section.settings.text | escape }}</p>{%- endif -%}
+    <div class="lsw-hero__btns">
+      {%- if section.settings.button != blank -%}<a class="cw-btn cw-btn--teal cw-btn--lg" href="{{ section.settings.link | default: routes.all_products_collection_url }}">{{ section.settings.button | escape }}</a>{%- endif -%}
+      {%- if section.settings.button2 != blank -%}<a class="cw-btn cw-btn--lg" href="{{ section.settings.link2 | default: '/cart#quick-order' }}">{{ section.settings.button2 | escape }}</a>{%- endif -%}
+    </div>
+  </div>
+  <div class="lsw-hero__pic">
+    {%- if img -%}{{ img | image_url: width: 1400 | image_tag: loading: 'eager', fetchpriority: 'high', alt: section.settings.title, sizes: '(min-width: 990px) 760px, 100vw' }}{%- else -%}<span class="lsw-hero__ph">{%- render 'cw-icon', name: 'kit', size: 72, stroke: 1.2 -%}</span>{%- endif -%}
+    {%- if fp -%}
+      {%- assign fv = fp.selected_or_first_available_variant -%}
+      <a class="lsw-hero__card" href="{{ fp.url }}">
+        <span>
+          {%- if section.settings.badge != blank -%}<em class="lsw-badge">{{ section.settings.badge | escape }}</em>{%- endif -%}
+          <b>{{ fp.title | split: ' - ' | last | split: ',' | first | escape }}</b>
+          <small>{{ fv.sku | escape }}</small>
+        </span>
+        {%- if cw_can == 'yes' -%}<span class="lsw-hero__price"><small>Trade</small><b>{{ fv.price | money }}</b></span>{%- endif -%}
+      </a>
+    {%- endif -%}
+  </div>
+</section></div>
+{% schema %}
+{
+  "name": "Big welcome picture",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Small line above the title", "default": "Luca-S trade store" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Kits, threads and fabric, straight from Luca-S." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Order kits by the piece, threads by the box of 12, fabric by the size, or paste a list of SKUs. Trade prices show once your shop is approved." },
+    { "type": "text", "id": "button", "label": "Main button", "default": "Shop new kits" },
+    { "type": "url", "id": "link", "label": "Main button link" },
+    { "type": "text", "id": "button2", "label": "Second button", "default": "Quick order by SKU" },
+    { "type": "text", "id": "link2", "label": "Second button link", "default": "/cart#quick-order" },
+    { "type": "image_picker", "id": "image", "label": "Picture (empty = the featured product's photo)" },
+    { "type": "product", "id": "product", "label": "Featured product (card on the picture)" },
+    { "type": "text", "id": "badge", "label": "Badge on the card", "default": "New" }
+  ],
+  "presets": [ { "name": "Big welcome picture" } ]
+}
+{% endschema %}
