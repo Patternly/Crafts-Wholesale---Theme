@@ -8,8 +8,9 @@
       echo 'yes'
     when 'tagged'
       if customer
-        assign tag = settings.cw_trade_tag | default: 'Customer'
-        if customer.b2b? or customer.tags contains tag
+        assign tag = settings.cw_trade_tag | default: 'customer' | downcase | strip
+        assign have = customer.tags | join: '|||' | downcase | split: '|||'
+        if customer.b2b? or have contains tag
           echo 'yes'
         endif
       endif

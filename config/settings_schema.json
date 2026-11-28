@@ -1470,7 +1470,7 @@
         "type": "select",
         "id": "cw_price_rule",
         "label": "Who sees prices and can order",
-        "default": "signed_in",
+        "default": "tagged",
         "options": [
           {
             "value": "everyone",
